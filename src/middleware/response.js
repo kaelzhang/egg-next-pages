@@ -7,11 +7,7 @@ const DEFAULT_CDN_MAX_AGE = 60000
 const factory = ({
   CDN = {}
 }) => async (ctx, next) => {
-  const ret = await next()
-  const {
-    html,
-    status
-  } = ret || {}
+  const html = await next()
 
   ctx.set(
     HEADER_KEY_CACHE_CONTROL,

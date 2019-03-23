@@ -16,9 +16,9 @@
 # egg-ssr-pages
 
 Create [roe](https://github.com/kaelzhang/roe)/[egg](https://npmjs.org/package/egg) route definitions to host server-side rendered pages by using [next](https://npmjs.org/package/next)
+or others.
 
-By using this module, your roe/egg application should has a `next` property on the instance.
-
+By using `next`(the default renderer) as the renderer, your roe/egg application should has a `next` property on the instance.
 
 ## Install
 
@@ -35,12 +35,17 @@ const nextPages = require('egg-ssr-pages')
 
 module.exports = nextPages({
   pages: {
+    // Then if we can access the index.js by
+    //   visiting the page http://localhost:8888/en-US
     '/:lang': 'index.js'
   },
   cache: {
     maxAge: 0
   },
-  guard: 'memory'
+  guard: 'memory',
+
+  // By default, it renders pages by using next
+  // render: 'next'
 })
 ```
 
@@ -56,27 +61,36 @@ Returns a roe/egg router function which accepts `app` as the only one parameter.
 
 ```ts
 // So that we can override the default ssr configurations
-interface PageDef extends SSRConfig {
+interface PageDef extends OptionalSSRConfig {
   entry: string
 }
 ```
 
 ```ts
-type SSRenderer = async (ctx, pagePath): string
+type PreflightChecker = (app): Object | undefined throws Error
 
-interface SSRConfig {
+interface SSRenderer {
+  precheck: PreflightChecker
+  async render (ctx, pagePath): string throws Error
+}
+
+interface OptionalSSRConfig {
   // Disable CDN cache by setting to `false`,
   // Defaults to `false`
-  cache: CachePolicy | false
+  cache?: CachePolicy | false
   // Set the `guard` to `false` to disable server-side guardians.
   // - GuardPolicy: your custom policy
   // - string: the name of built-in policies, for now it only supports `'memory'`
   // - `false`(the default value): turn off the guardians
-  guard: GuardPolicy | string | false
+  guard?: GuardPolicy | string | false
+}
+
+interface SSRConfig extends OptionalSSRConfig {
   // Method to render the page
   // - SSRenderer: your custom renderer
   // - string: the name of built-in renderers: 'next'
-  render: SSRenderer | string
+  // Defaults to `'next'`
+  renderer: SSRenderer | string
 }
 ```
 
@@ -122,6 +136,29 @@ interface GuardPolicy {
 - **time** `number` the milliseconds how much the renderer takes to render the page
 
 ### Override default `SSRConfig` for a certain pagePath
+
+```js
+module.exports = nextPages({
+  pages: {
+    '/:lang': 'index.js',
+
+    // We can override a certain property `SSRConfig` by
+    //   defining a new value in each `PageDef`
+    '/about': {
+      entry: 'about.js',
+      cache: {
+        // http://localhost:8888/about
+        // -> max-age: 1h
+        maxAge: 60 * 60 * 1000
+      }
+    }
+  },
+  cache: {
+    maxAge: 0
+  },
+  guard: 'memory'
+})
+```
 
 ## License
 

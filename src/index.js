@@ -1,35 +1,34 @@
 const {ensureLeading} = require('pre-suf')
 
 const error = require('./error')
+const {
+  getRenderer
+} = require('./options')
 
-const middleware = {
-  cache: require('./middleware/cache'),
+const MIDDLEWARE = {
+  guard: require('./middleware/guard'),
   response: require('./middleware/page-response')
 }
-
-const createNextController = (app, next, pathname) =>
-  async ctx => {
-    const {
-      req, res, params
-    } = ctx
-
-    return {
-      html: await next.renderToHTML(req, res, pathname, params)
-    }
-  }
 
 const ensurePath = s => ensureLeading(s, '/')
 
 // Ref:
 // https://github.com/kaelzhang/egg-define-router#definerouterroutes-middlewareroot-factory
-const applyNextPages = (app, pages) => {
+const applySSRPages = (app, pages, {
+  renderer,
+  guard,
+  cache = {}
+}) => {
   const {
-    router,
-    next
-  } = app
+    precheck,
+    render
+  } = getRenderer(renderer)
+  const guardian = gerGardian(guard)
 
-  if (!next) {
-    throw error('NEXT_NOT_FOUND')
+  let extends
+
+  if (precheck) {
+    extends = precheck(app)
   }
 
   // {
@@ -75,3 +74,8 @@ const applyNextPages = (app, pages) => {
     )
   })
 }
+
+module.exports = ({
+  pages = {},
+  ...config
+}) => app => applySSR(app, pages, config)
