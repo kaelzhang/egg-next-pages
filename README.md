@@ -15,7 +15,10 @@
 
 # egg-ssr-pages
 
-<!-- description -->
+Create [roe](https://github.com/kaelzhang/roe)/[egg](https://npmjs.org/package/egg) route definitions to host server-side rendered pages by using [next](https://npmjs.org/package/next)
+
+By using this module, your roe/egg application should has a `next` property on the instance.
+
 
 ## Install
 
@@ -26,7 +29,7 @@ $ npm i egg-ssr-pages
 ## Usage
 
 ```js
-import egg_ssr_pages from 'egg-ssr-pages'
+const nextPages = require('egg-ssr-pages')
 ```
 
 ## License
