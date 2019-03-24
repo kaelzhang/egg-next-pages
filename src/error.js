@@ -50,4 +50,6 @@ E('INVALID_GUARDIAN_PROP', {
   ctor: TypeError
 })
 
+E('GUARDIAN_VALIDATE_FAILS', 'the result is validated as a failure')
+
 module.exports = error

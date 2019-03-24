@@ -109,25 +109,25 @@ interface GuardPolicy {
   // If the function returns an object,
   //   then the object will be used to extend the koa context object,
   //   so that we can access them from all methods below.
-  precheck (app): Object | undefined throws Error
+  precheck? (app): Object | undefined throws Error
 
   // Generates the cache key
   key (ctx): string
 
-  // If `render` method has been invoked successfully,
-  //    `success` will be called and skip all the following.
+  // If this function is rejected or returns `false`
+  // then it will goes into `fallback`
+  async validateSSRResult? (ctx, key, html, time): boolean throws Error
+
+  // If `render` method has been invoked and validated successfully,
+  //    `onSuccess` will be called and skip all the following.
   // Most usually, all logic inside `onSuccess` should be catched,
   //   or if there is an error or rejection,
   //   it will goes to `fallback`
-  async onSuccess (ctx, key, html): void
-
-  // If this function is rejected or returns `false`
-  // then it will goes into `fallback`
-  async validateSSRResult (ctx, key, html, time): boolean throws Error
+  async onSuccess? (ctx, key, html): void
 
   // If `fallback` succeeded to return a string,
   //   the string will be used instead of the return value of `render`
-  async fallback (ctx, key, html): string throws Error
+  async fallback (ctx, key, error): string throws Error
 ```
 
 - **ctx** `KoaContext` the koa context, if `precheck` returns an object, then it will be the extended koa context which has the return value as its own properties

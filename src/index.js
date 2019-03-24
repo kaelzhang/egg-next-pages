@@ -2,7 +2,8 @@ const {ensureLeading} = require('pre-suf')
 
 const error = require('./error')
 const {
-  getRenderer
+  getRenderer,
+  createContext
 } = require('./options')
 
 const MIDDLEWARE = {
@@ -23,12 +24,21 @@ const applySSRPages = (app, pages, {
     precheck,
     render
   } = getRenderer(renderer)
-  const guardian = gerGardian(guard)
+  const defaultGuard = gerGardian(guard)
 
-  let extends
+  let defaultExtends
 
   if (precheck) {
-    extends = precheck(app)
+    defaultExtends = precheck(app)
+  }
+
+  let defualtGuardMiddleware
+  if (defaultGuard) {
+    if (guardian.precheck) {
+      const
+    }
+
+    defualtGuardMiddleware = MIDDLEWARE.guard(guardian)
   }
 
   // {
@@ -39,14 +49,18 @@ const applySSRPages = (app, pages, {
   // }
   Object.keys(pages).forEach(page => {
     const def = pages[page]
-    const {
-      entry,
-      ...options
-    } = typeof def === 'string'
-      ? {
-        entry: def
-      }
-      : def
+
+    let entry
+    let options
+
+    if (typeof def === 'string') {
+      entry = def
+    } else {
+      {
+        entry,
+        ...options
+      } = def
+    }
 
     const pathname = ensurePath(entry)
 
@@ -59,9 +73,9 @@ const applySSRPages = (app, pages, {
       cache
     } = options
 
-    if (cache !== false) {
+    if (guard !== false) {
       // Handle caches
-      middlewares.push(middleware.cache(app, {
+      middlewares.push(middleware.guard(app, {
         cache,
         pathname
       }))
