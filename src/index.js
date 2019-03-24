@@ -12,6 +12,23 @@ const MIDDLEWARE = {
 }
 
 const ensurePath = s => ensureLeading(s, '/')
+const isPlainObject = object => Object.keys(object).length === 0
+
+const applyPrecheck = (ext, precheck, app, createNew) => {
+  if (!precheck) {
+    return
+  }
+
+  return createNew
+    ? Object.assign({}, ext, precheck(app))
+    : Object.assign(ext, precheck(app))
+}
+
+const createRendererController = (render, contextExtends, pagePath) =>
+  ctx => {
+    const context = createContext(ctx, contextExtends)
+    return render(context, pagePath)
+  }
 
 // Ref:
 // https://github.com/kaelzhang/egg-define-router#definerouterroutes-middlewareroot-factory
@@ -21,24 +38,29 @@ const applySSRPages = (app, pages, {
   cache = {}
 }) => {
   const {
-    precheck,
+    precheck: rendererPrecheck,
     render
   } = getRenderer(renderer)
   const defaultGuard = gerGardian(guard)
 
-  let defaultExtends
-
-  if (precheck) {
-    defaultExtends = precheck(app)
-  }
+  const baseExtends = applyPrecheck({}, rendererPrecheck, app)
 
   let defualtGuardMiddleware
+  let defaultExtends
   if (defaultGuard) {
-    if (guardian.precheck) {
-      const
-    }
+    const {
+      precheck: defaultPrecheck,
+      ...defaultGuardian
+    } = defaultGuard
 
-    defualtGuardMiddleware = MIDDLEWARE.guard(guardian)
+    defaultExtends = applyPrecheck(
+      baseExtends,
+      defaultPrecheck,
+      app,
+      true
+    )
+
+    defualtGuardMiddleware = MIDDLEWARE.guard(defaultGuardian)
   }
 
   // {
@@ -62,29 +84,38 @@ const applySSRPages = (app, pages, {
       } = def
     }
 
-    const pathname = ensurePath(entry)
+    const {
+      cache,
+      guard
+    } = options
 
     const middlewares = [
       // Handle http response
-      middleware.response(options)
+      middleware.response(cache)
     ]
 
-    const {
-      cache
-    } = options
+    let contextExtends = defaultExtends
 
     if (guard !== false) {
+      const {
+        precheck,
+        ...guardian
+      } = guard
+
+      contextExtends = applyPrecheck(baseExtends, precheck, app, true)
+
       // Handle caches
-      middlewares.push(middleware.guard(app, {
-        cache,
-        pathname
-      }))
+      middlewares.push(
+        middleware.guard(guardian, contextExtends)
+      )
     }
+
+    const pathname = ensurePath(entry)
 
     router.get(
       page,
       ...middlewares,
-      createNextController(app, next, pathname)
+      createRendererController(render, contextExtends, pathname)
     )
   })
 }

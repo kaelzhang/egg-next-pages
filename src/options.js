@@ -76,8 +76,8 @@ const getGuardian = guard => {
   return GUARDIANS[guard]
 }
 
-const createContext = (ext, ctx) => ({
-  ...ext,
+const createContext = (ctx, contextExtends) => ({
+  ...contextExtends,
   __proto__: ctx
 })
 

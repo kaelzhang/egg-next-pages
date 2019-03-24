@@ -1,22 +1,27 @@
+const {
+  createContext
+} = require('../options')
+
 module.exports = ({
   key: createKey,
   validateSSRResult,
   onSuccess,
   fallback
-}) => (ctx, next) => {
-  const key = createKey(ctx)
+}, contextExtends) => (ctx, next) => {
+  const context = createContext(ctx, contextExtends)
+  const key = createKey(context)
   const start = Date.now()
   return next()
   .then(
     html =>
-      validateSSRResult(ctx, key, html, Date.now() - start)
+      validateSSRResult(context, key, html, Date.now() - start)
       .then(valid => {
         if (valid === false) {
           return Promise.reject(error('GUARDIAN_VALIDATE_FAILS'))
         }
 
-        return onSuccess(ctx, key, html)
+        return onSuccess(context, key, html)
       })
   )
-  .catch(error => fallback(ctx, key, error))
+  .catch(error => fallback(context, key, error))
 }
