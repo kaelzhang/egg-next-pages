@@ -16,6 +16,9 @@ module.exports = (cache = {}) => async (ctx, next) => {
       : WITH_CACHE(parseInt((cache.maxAge || ZERO) / 1000, 10))
   )
 
+  console.log('ctx.url', ctx.res.statusCode)
+  ctx.status = ctx.res.statusCode
+
   if (html) {
     ctx.body = html
   }

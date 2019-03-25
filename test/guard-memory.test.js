@@ -37,21 +37,43 @@ test.before(async () => {
   normal = app
 })
 
-test('memory: default setting', async t => {
+test.serial('memory: 404 page', async t => {
+  await request(normal.callback())
+  .get('/foo/bar')
+  .expect(404)
+
+  t.pass()
+})
+
+test.serial('memory: default setting', async t => {
   const {
     text
   } = await request(normal.callback())
   .get('/home/en')
   .expect(200)
+  .expect('x-ssr-guard', 'no')
 
   log('response: %s', text)
 
   t.true(text.includes(JSON.stringify({lang: 'en'})))
 })
 
-test('memory: 404 page', async t => {
+test.serial('not found, but guard', async t => {
+  await fs.remove(tmpFixture('pages', 'index.js'))
+
+  const {
+    text
+  } = await request(normal.callback())
+  .get('/home/en')
+  .expect(200)
+  .expect('x-ssr-guard', 'yes')
+
+  t.true(text.includes(JSON.stringify({lang: 'en'})))
+})
+
+test.serial('no found, no guard', async t => {
   await request(normal.callback())
-  .get('/foo/bar')
+  .get('/home/cn')
   .expect(404)
 
   t.pass()
