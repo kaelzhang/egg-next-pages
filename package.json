@@ -38,9 +38,11 @@
     "eslint-plugin-import": "^2.13.0",
     "nyc": "^13.3.0",
     "react": "^16.8.5",
+    "react-dom": "^16.8.5",
     "supertest": "^4.0.2"
   },
   "dependencies": {
+    "err-object": "^4.1.0",
     "lru-cache": "^5.1.1",
     "pre-suf": "^1.1.1"
   }

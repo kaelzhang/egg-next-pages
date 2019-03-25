@@ -1,6 +1,7 @@
 const {
   createContext
 } = require('../options')
+const error = require('../error')
 
 module.exports = ({
   key: createKey,

@@ -53,7 +53,7 @@ const config = {
 module.exports = nextPages(pages, config)
 ```
 
-## nextPage(pages, config: SSRConfig)
+## ssrPages(pages, config: SSRConfig)
 
 - **pages** `{[path: string]: PageDef | string}` pages
 - **config** `SSRConfig` the default ssr configurations
@@ -140,11 +140,11 @@ interface GuardPolicy {
 ### Override default `SSRConfig` for a certain pagePath
 
 ```js
-module.exports = nextPages({
+module.exports = ssrPages({
   pages: {
     '/:lang': 'index.js',
 
-    // We can override a certain property `SSRConfig` by
+    // We can override a certain property of `SSRConfig` by
     //   defining a new value in each `PageDef`
     '/about': {
       entry: 'about.js',

@@ -1,30 +1,42 @@
 const error = require('./error')
+const {
+  AVAILABLE_RENDERERS,
+  RENDERER
+} = require('./renderer')
 
-const RENDERER = {
-  next: require('./renderer/next')
+const isObject = object => Object(object) === object
+
+const checkRendererFunction = (host, key, required) => {
+  const fn = host[key]
+
+  if (!fn && !required) {
+    return
+  }
+
+  if (typeof fn !== 'function') {
+    throw error('INVALID_RENDERER_PROP', key, fn)
+  }
 }
 
-const AVAILABLE_RENDERERS = Object.keys(RENDERER)
-
-const getRenderer = render => {
-  if (typeof render === 'function') {
-    return {
-      render
-    }
+const getRenderer = renderer => {
+  if (isObject(renderer)) {
+    checkRendererFunction(renderer, 'precheck')
+    checkRendererFunction(renderer, 'render', true)
+    return renderer
   }
 
-  if (typeof render !== 'string') {
-    throw error('INVALID_RENDERER')
+  if (typeof renderer !== 'string') {
+    throw error('INVALID_RENDERER', renderer)
   }
 
-  if (!AVAILABLE_RENDERERS.includes(render)) {
-    throw error('INVALID_BUILTIN_RENDERER', render)
+  if (!AVAILABLE_RENDERERS.includes(renderer)) {
+    throw error('INVALID_BUILTIN_RENDERER', renderer)
   }
 
-  return RENDERER[render]
+  return RENDERER[renderer]
 }
 
-const ensureFunction = (host, key, defaultValue) => {
+const ensureGuardFunction = (host, key, defaultValue) => {
   if (!(key in host) && defaultValue) {
     host[key] = defaultValue
     return
@@ -41,11 +53,11 @@ const ensureFunction = (host, key, defaultValue) => {
 const NOOP = () => {}
 const RETURNS_TRUE = () => true
 const checkGuardian = guard => {
-  ensureFunction(guard, 'precheck', NOOP)
-  ensureFunction(guard, 'key')
-  ensureFunction(guard, 'validateSSRResult', RETURNS_TRUE)
-  ensureFunction(guard, 'onSuccess', NOOP)
-  ensureFunction(guard, 'fallback')
+  ensureGuardFunction(guard, 'precheck', NOOP)
+  ensureGuardFunction(guard, 'key')
+  ensureGuardFunction(guard, 'validateSSRResult', RETURNS_TRUE)
+  ensureGuardFunction(guard, 'onSuccess', NOOP)
+  ensureGuardFunction(guard, 'fallback')
 }
 
 const getGuardian = guard => {
@@ -54,7 +66,7 @@ const getGuardian = guard => {
     return
   }
 
-  if (Object(guard) === guard) {
+  if (isObject(guard)) {
     checkGuardian(guard)
     return guard
   }

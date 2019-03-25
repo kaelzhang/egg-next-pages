@@ -1,6 +1,6 @@
 const LRU = require('lru-cache')
 
-const key = ctx => {
+const createKey = ctx => {
   const {req} = ctx
   return `${req.hostname}${req.path}`
 }
@@ -26,7 +26,7 @@ const fallback = (ctx, key, error, cache) => {
 module.exports = options => {
   const cache = new LRU(options)
   return {
-    key,
+    key: createKey,
     onSuccess: (...args) => onSuccess(...args, cache),
     validateSSRResult,
     fallback: (...args) => fallback(...args, cache)

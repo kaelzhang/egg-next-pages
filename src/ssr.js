@@ -29,9 +29,10 @@ const createRendererController = (render, contextExtends, pagePath) =>
     return render(context, pagePath)
   }
 
-const createGuardMiddleware = (app, guard, baseExtends) => {
+// Create guard middleware and context
+const createGuardPreset = (app, guard, baseExtends) => {
   if (!guard) {
-    return
+    return {}
   }
 
   const {
@@ -60,9 +61,9 @@ const createGuardMiddleware = (app, guard, baseExtends) => {
 // Ref:
 // https://github.com/kaelzhang/egg-define-router#definerouterroutes-middlewareroot-factory
 const applySSRPages = (app, pages, {
-  renderer,
+  renderer = 'next',
   guard,
-  cache = {}
+  cache: defaultCacheOptions = {}
 }) => {
   const {
     precheck: rendererPrecheck,
@@ -72,7 +73,7 @@ const applySSRPages = (app, pages, {
 
   const baseExtends = applyPrecheck({}, rendererPrecheck, app)
 
-  const defaultPreset = createGuardMiddleware(
+  const defaultGuardPreset = createGuardPreset(
     app,
     defaultGuard,
     baseExtends
@@ -88,7 +89,7 @@ const applySSRPages = (app, pages, {
     const def = pages[page]
 
     let entry
-    let options
+    let options = {}
 
     if (typeof def === 'string') {
       entry = def
@@ -101,7 +102,11 @@ const applySSRPages = (app, pages, {
 
     const middlewares = [
       // Handle http response
-      MIDDLEWARE.response(Object.assign({}, cache, options.cache))
+      MIDDLEWARE.response(
+        options.cache
+          ? Object.assign({}, defaultCacheOptions, options.cache)
+          : defaultCacheOptions
+      )
     ]
 
     const {
@@ -109,12 +114,12 @@ const applySSRPages = (app, pages, {
       contextExtends
     } = options.guard
       // If custom guard found, the default guard should be overridden
-      ? createGuardMiddleware(
+      ? createGuardPreset(
         app,
         options.guard,
         baseExtends
       )
-      : defaultPreset
+      : defaultGuardPreset
 
     if (guardMiddleware) {
       middlewares.push(guardMiddleware)

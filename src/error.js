@@ -1,18 +1,18 @@
 const {Errors} = require('err-object')
 const {
   AVAILABLE_RENDERERS
-} = require('./options')
+} = require('./renderer')
 
 const {error, E} = new Errors()
 
 E('NEXT_NOT_FOUND', 'app.next not found, next instance should be added to egg app before router is about to load')
 
 E('INVALID_RENDERER', {
-  message: 'options.render must be a function or a string',
+  message: 'options.renderer must be a function or a string, but got %s',
   ctor: TypeError
 })
 
-const generateMessage = (items => {
+const generateMessage = items => {
   if (items.length === 1) {
     return `only "${items[0]}" is`
   }
@@ -38,6 +38,11 @@ E('INVALID_GUARD', {
 
 E('INVALID_GUARDIAN_PROP', {
   message: 'guardian.%s must be a function, but got %s',
+  ctor: TypeError
+})
+
+E('INVALID_RENDERER_PROP', {
+  message: 'renderer.%s must be a function, but got %s',
   ctor: TypeError
 })
 
