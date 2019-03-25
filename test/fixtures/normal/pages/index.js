@@ -2,18 +2,19 @@ import {Component} from 'react'
 
 export default class IndexPage extends Component {
   static getInitialProps ({query}) {
-    const {
-      lang
-    } = query
-
-    return {
-      lang
-    }
+    return query
   }
 
   render () {
+    const {
+      url,
+      pathname,
+      asPath,
+      ...query
+    } = this.props
+
     return (
-      <div>[lang:{this.props.lang}]</div>
+      <div>{JSON.stringify(query)}</div>
     )
   }
 }

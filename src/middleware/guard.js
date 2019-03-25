@@ -13,17 +13,20 @@ module.exports = ({
   const key = createKey(context)
   const start = Date.now()
 
-  return next()
-  .then(
-    html =>
-      validateSSRResult(context, key, html, Date.now() - start)
-      .then(valid => {
-        if (valid === false) {
-          return Promise.reject(error('GUARDIAN_VALIDATE_FAILS'))
-        }
+  return Promise.resolve(next())
+  .then(html => {
+    const result = validateSSRResult(context, key, html, Date.now() - start)
 
-        return onSuccess(context, key, html)
-      })
-  )
-  .catch(error => fallback(context, key, error))
+    // validateSSRResult could be a non-async function
+    return Promise.resolve(result)
+    .then(valid => {
+      if (valid === false) {
+        return Promise.reject(error('GUARDIAN_VALIDATE_FAILS'))
+      }
+
+      return onSuccess(context, key, html)
+    })
+    .then(() => html)
+  })
+  .catch(err => fallback(context, key, err))
 }

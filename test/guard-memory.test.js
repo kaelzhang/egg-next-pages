@@ -6,7 +6,7 @@ const {
   createServer
 } = require('./fixtures/create')
 
-process.env.EGG_SSR_PAGES_TYPE = 'normal'
+process.env.EGG_SSR_PAGES_TYPE = 'memory'
 
 let normal
 
@@ -18,7 +18,7 @@ test.before(async () => {
   normal = app
 })
 
-test('normal: default setting', async t => {
+test('memory: default setting', async t => {
   const {
     text
   } = await request(normal.callback())
@@ -30,7 +30,7 @@ test('normal: default setting', async t => {
   t.true(text.includes(JSON.stringify({lang: 'en'})))
 })
 
-test('normal: 404 page', async t => {
+test('memory: 404 page', async t => {
   await request(normal.callback())
   .get('/foo/bar')
   .expect(404)

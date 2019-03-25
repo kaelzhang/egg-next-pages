@@ -16,10 +16,6 @@ module.exports = (cache = {}) => async (ctx, next) => {
       : WITH_CACHE(parseInt((cache.maxAge || ZERO) / 1000, 10))
   )
 
-  // Next will not set ctx.status explicitly
-  // So set status to prevent koa 404 error
-  // ctx.status = ctx.res.statusCode || 200
-
   if (html) {
     ctx.body = html
   }

@@ -3,7 +3,7 @@ const {
   Server
 } = require('roe-scripts')
 
-const fixture = s => path.join(__dirname, s)
+const fixture = s => path.resolve(__dirname, s)
 
 const createServer = async name => {
   const server = new Server({

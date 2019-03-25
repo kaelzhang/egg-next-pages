@@ -26,6 +26,19 @@ const applyPrecheck = (ext, precheck, app, createNew) => {
 const createRendererController = (render, contextExtends, pagePath) =>
   ctx => {
     const context = createContext(ctx, contextExtends)
+    const {
+      res
+    } = ctx
+
+    // Koa will set `res.statusCode` as 404
+    //   which causes that we don't know whether a certain
+    //   next page exists,
+    // If a request arrived here, which indicates that the request
+    //   matches the router,
+    //   so that we can simply set `res.statusCode` as 200
+    //   before `next.renderToHTML`
+    res.statusCode = 200
+
     return render(context, pagePath)
   }
 
@@ -132,7 +145,5 @@ const applySSRPages = (app, pages, {
   })
 }
 
-module.exports = ({
-  pages = {},
-  ...config
-}) => app => applySSRPages(app, pages, config)
+module.exports = (pages = {}, config = {}) =>
+  app => applySSRPages(app, pages, config)

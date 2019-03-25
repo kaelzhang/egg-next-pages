@@ -13,7 +13,7 @@ module.exports = {
     }
   },
 
-  render (ctx, pagePath) {
+  async render (ctx, pagePath) {
     const {
       req,
       res,
