@@ -13,23 +13,24 @@ const onSuccess = (ctx, key, html, cache) => {
 
 const validateSSRResult = ctx => {
   const {res} = ctx
-  console.log('validate', ctx.url, res.statusCode)
   return res.statusCode === 200
 }
 
 const fallback = (ctx, key, html, error, cache) => {
   const value = cache.get(key)
-  console.log('++++++++++ fallback', key, ctx.url, !!value)
   if (value) {
-    ctx.res.setHeader(HEADER_SSR, GUARD)
+    const {
+      res
+    } = ctx
+
+    res.statusCode = 200
+    res.setHeader(HEADER_SSR, GUARD)
     return value
   }
 
   if (error) {
     throw error
   }
-
-  console.log('return undefined', key)
 }
 
 module.exports = options => {

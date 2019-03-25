@@ -1,5 +1,4 @@
 const path = require('path')
-const log = require('util').debuglog('egg-ssr-pages')
 const test = require('ava')
 const request = require('supertest')
 const fs = require('fs-extra')
@@ -47,14 +46,14 @@ test.serial('memory: 404 page', async t => {
 
 test.serial('memory: default setting', async t => {
   const {
-    text
+    text,
+    statusCode,
+    headers
   } = await request(normal.callback())
   .get('/home/en')
-  .expect(200)
-  .expect('x-ssr-guard', 'no')
 
-  log('response: %s', text)
-
+  t.is(headers['x-ssr-guard'], 'no')
+  t.is(statusCode, 200)
   t.true(text.includes(JSON.stringify({lang: 'en'})))
 })
 
@@ -62,19 +61,22 @@ test.serial('not found, but guard', async t => {
   await fs.remove(tmpFixture('pages', 'index.js'))
 
   const {
+    statusCode,
+    headers,
     text
   } = await request(normal.callback())
   .get('/home/en')
-  .expect(200)
-  .expect('x-ssr-guard', 'yes')
 
+  t.is(headers['x-ssr-guard'], 'yes')
+  t.is(statusCode, 200)
   t.true(text.includes(JSON.stringify({lang: 'en'})))
 })
 
 test.serial('no found, no guard', async t => {
-  await request(normal.callback())
+  const {
+    statusCode
+  } = await request(normal.callback())
   .get('/home/cn')
-  .expect(404)
 
-  t.pass()
+  t.is(statusCode, 404)
 })

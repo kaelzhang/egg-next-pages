@@ -11,7 +11,7 @@ function fakeSetHeader (name, value) {
 const handle = res => {
   // Koa will set `res.statusCode` as 404
   //   which causes that we don't know whether a certain
-  //   next page exists.
+  //   next page exists or not.
   // If a request arrived here, which indicates that the request
   //   matches the router,
   //   so that we can simply set `res.statusCode` as 200
@@ -24,7 +24,7 @@ const handle = res => {
   res[HEADERS] = Object.create(null)
 
   // Lifecycle methods of guardians might changes the headers,
-  //   so `res.headerSent` might be true to prevent
+  //   so `res.headerSent` might be true to prevent status being set
   res.setHeader = fakeSetHeader
 }
 

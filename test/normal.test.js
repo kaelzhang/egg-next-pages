@@ -35,15 +35,14 @@ test('normal: default setting', async t => {
   .get('/home/en')
   .expect(200)
 
-  log('response: %s', text)
-
   t.true(text.includes(JSON.stringify({lang: 'en'})))
 })
 
 test('normal: 404 page', async t => {
-  await request(normal.callback())
+  const {
+    statusCode
+  } = await request(normal.callback())
   .get('/foo/bar')
-  .expect(404)
 
-  t.pass()
+  t.is(statusCode, 404)
 })
