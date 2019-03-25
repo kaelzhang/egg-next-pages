@@ -1,3 +1,10 @@
 {
-  "name": "normal"
+  "name": "normal",
+  "dependencies": {
+    "react": "^16.8.5",
+    "react-dom": "^16.8.5",
+    "@babel/core": "^7.4.0",
+    "@babel/runtime-corejs2": "^7.4.2",
+    "next-server": "^8.0.3"
+  }
 }

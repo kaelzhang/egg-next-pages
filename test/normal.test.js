@@ -3,7 +3,8 @@ const test = require('ava')
 const request = require('supertest')
 
 const {
-  createServer
+  createServer,
+  fixture
 } = require('./fixtures/create')
 
 process.env.EGG_SSR_PAGES_TYPE = 'normal'
@@ -11,9 +12,11 @@ process.env.EGG_SSR_PAGES_TYPE = 'normal'
 let normal
 
 test.before(async () => {
+  const root = fixture('normal')
+
   const {
     app
-  } = await createServer('normal')
+  } = await createServer(root)
 
   normal = app
 })

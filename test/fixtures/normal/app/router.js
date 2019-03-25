@@ -1,4 +1,5 @@
-const ssr = require('../../../..')
+/* eslint-disable import/no-unresolved */
+const ssr = require('egg-ssr-pages')
 
 const normal = () => ssr({
   '/home/:lang': 'index'

@@ -31,21 +31,18 @@
     "url": "https://github.com/kaelzhang/egg-ssr-pages/issues"
   },
   "devDependencies": {
-    "ava": "^1.2.1",
+    "ava": "^1.4.0",
     "codecov": "^3.2.0",
-    "eslint": "^5.14.0",
-    "eslint-config-ostai": "^1.1.0",
-    "eslint-plugin-import": "^2.13.0",
-    "next-server": "^8.0.3",
+    "eslint": "^5.15.3",
+    "eslint-config-ostai": "^3.0.0",
+    "eslint-plugin-import": "^2.16.0",
+    "fs-extra": "^7.0.1",
     "nyc": "^13.3.0",
-    "react": "^16.8.5",
-    "react-dom": "^16.8.5",
+    "roe-scripts": "^0.0.2",
     "supertest": "^4.0.2",
-    "roe-scripts": "^0.0.1"
+    "tmp-promise": "^1.0.5"
   },
   "dependencies": {
-    "@babel/core": "^7.4.0",
-    "@babel/runtime-corejs2": "^7.4.2",
     "err-object": "^4.1.0",
     "lru-cache": "^5.1.1",
     "pre-suf": "^1.1.1"
