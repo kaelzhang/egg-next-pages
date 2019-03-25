@@ -2,7 +2,6 @@ const path = require('path')
 const log = require('util').debuglog('egg-ssr-pages')
 const test = require('ava')
 const request = require('supertest')
-const tmp = require('tmp-promise')
 const fs = require('fs-extra')
 
 const {
@@ -16,10 +15,8 @@ let normal
 let tmpFixture
 
 test.before(async () => {
-  const {
-    path: root
-  } = await tmp.dir()
-  tmpFixture = (s = '.') => path.join(root, 'normal', s)
+  const root = fixture('..', '..', 'egg-ssr-pages-test')
+  tmpFixture = (...args) => path.join(root, 'normal', ...args)
 
   const dest = tmpFixture()
 

@@ -5,7 +5,7 @@ const {
 // const npminstall = require('npminstall')
 // const co = require('co')
 
-const fixture = s => path.resolve(__dirname, s)
+const fixture = (...args) => path.resolve(__dirname, ...args)
 
 const createServer = async name => {
   const server = new Server({

@@ -9,3 +9,4 @@ before_install:
   - cd -
 before_script:
   - npm link
+  - export NODE_PATH="$(npm prefix -g)/lib/node_modules"
