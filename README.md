@@ -33,9 +33,9 @@ app/router.js
 ```js
 const ssrPages = require('egg-ssr-pages')
 const pages = {
-    // Then if we can access the index.js by
+    // Then if we can access the pages/index.js by
     //   visiting the page http://localhost:8888/en-US
-    '/:lang': 'index.js'
+    '/:lang': 'index'
 }
 
 const config = {
@@ -142,24 +142,22 @@ interface GuardPolicy {
 
 ```js
 module.exports = ssrPages({
-  pages: {
-    '/:lang': 'index',
+  '/:lang': 'index',
 
-    // We can override a certain property of `SSRConfig` by
-    //   defining a new value in each `PageDef`
-    '/about': {
-      entry: 'about.js',
-      cache: {
-        // http://localhost:8888/about
-        // -> max-age: 1h
-        maxAge: 60 * 60 * 1000
-      }
+  // We can override a certain property of `SSRConfig` by
+  //   defining a new value in each `PageDef`
+  '/about': {
+    entry: 'about',
+    cache: {
+      // http://localhost:8888/about
+      // -> max-age: 1h
+      maxAge: 60 * 60 * 1000
     }
-  },
+  }
+}, {
   cache: {
     maxAge: 0
-  },
-  guard: 'memory'
+  }
 })
 ```
 
