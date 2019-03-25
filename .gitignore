@@ -1,6 +1,7 @@
 # babel dist
 /lib
 .next
+test/fixtures/*/dist
 
 # Numerous always-ignore extensions
 *.bak

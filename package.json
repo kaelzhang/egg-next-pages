@@ -4,8 +4,8 @@
   "description": "Create roe/egg route definitions to host server-side rendered pages by using next/nuxt",
   "main": "src/index.js",
   "scripts": {
-    "test": "nyc ava --timeout=10s",
-    "test-no-report": "NODE_DEBUG=egg-ssr-pages nyc ava --timeout=10s --verbose",
+    "test": "NODE_DEBUG=egg-ssr-pages nyc ava --timeout=10s --verbose test/*.test.js",
+    "test-no-report": "NODE_DEBUG=egg-ssr-pages nyc ava --timeout=10s --verbose test/*.test.js",
     "lint": "eslint .",
     "posttest": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
@@ -36,12 +36,16 @@
     "eslint": "^5.14.0",
     "eslint-config-ostai": "^1.1.0",
     "eslint-plugin-import": "^2.13.0",
+    "next-server": "^8.0.3",
     "nyc": "^13.3.0",
     "react": "^16.8.5",
     "react-dom": "^16.8.5",
-    "supertest": "^4.0.2"
+    "supertest": "^4.0.2",
+    "roe-scripts": "^0.0.1"
   },
   "dependencies": {
+    "@babel/core": "^7.4.0",
+    "@babel/runtime-corejs2": "^7.4.2",
     "err-object": "^4.1.0",
     "lru-cache": "^5.1.1",
     "pre-suf": "^1.1.1"

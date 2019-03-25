@@ -142,7 +142,7 @@ interface GuardPolicy {
 ```js
 module.exports = ssrPages({
   pages: {
-    '/:lang': 'index.js',
+    '/:lang': 'index',
 
     // We can override a certain property of `SSRConfig` by
     //   defining a new value in each `PageDef`

@@ -32,7 +32,10 @@ const createRendererController = (render, contextExtends, pagePath) =>
 // Create guard middleware and context
 const createGuardPreset = (app, guard, baseExtends) => {
   if (!guard) {
-    return {}
+    return {
+      // If no guard, we use the baseExtends
+      contextExtends: baseExtends
+    }
   }
 
   const {
@@ -79,12 +82,6 @@ const applySSRPages = (app, pages, {
     baseExtends
   )
 
-  // {
-  //   '/some/path': {
-  //     entry: 'some-page',
-  //     cache: true
-  //   }
-  // }
   Object.keys(pages).forEach(page => {
     const def = pages[page]
 

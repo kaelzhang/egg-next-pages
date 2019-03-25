@@ -1,31 +1,37 @@
-const path = require('path')
-
+const log = require('util').debuglog('egg-ssr-pages')
 const test = require('ava')
+const request = require('supertest')
+
 const {
-  Server
-} = require('roe-scripts')
-const supertest = require('supertest')
+  createServer
+} = require('./fixtures/create')
 
-const fixture = s => path.join(__dirname, 'fixtures', s)
-
-let app
+let normal
 
 test.before(async () => {
-  const server = new Server({
-    cwd: fixture('normal'),
-    dev: true
-  })
-
-  await server.ready()
-
-  ;({
+  const {
     app
-  } = server)
+  } = await createServer('normal')
+
+  normal = app
 })
 
 test('default setting', async t => {
-  await supertest(app.callback())
-  .get('')
+  const {
+    text
+  } = await request(normal.callback())
+  .get('/en')
+  .expect(200)
+
+  log('response: %s', text)
+
+  t.true(text.includes(JSON.stringify({lang: 'en'})))
+})
+
+test('404 page', async t => {
+  await request(normal.callback())
+  .get('/foo/bar')
+  .expect(404)
 
   t.pass()
 })

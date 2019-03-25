@@ -13,7 +13,7 @@ export default class IndexPage extends Component {
 
   render () {
     return (
-      <div>[lang:${this.props.lang}]</div>
+      <div>[lang:{this.props.lang}]</div>
     )
   }
 }
