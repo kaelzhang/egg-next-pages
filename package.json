@@ -30,6 +30,11 @@
   "bugs": {
     "url": "https://github.com/kaelzhang/egg-ssr-pages/issues"
   },
+  "nyc": {
+    "include": [
+      "src/**/*.js"
+    ]
+  },
   "devDependencies": {
     "ava": "^1.4.0",
     "codecov": "^3.2.0",

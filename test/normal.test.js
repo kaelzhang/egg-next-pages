@@ -1,6 +1,7 @@
 const log = require('util').debuglog('egg-ssr-pages')
 const test = require('ava')
 const request = require('supertest')
+const fs = require('fs-extra')
 
 const {
   createServer,
@@ -13,6 +14,12 @@ let normal
 
 test.before(async () => {
   const root = fixture('normal')
+  try {
+    await fs.remove(fixture('normal', 'dist'))
+  } catch (err) {
+    /* eslint-disable no-console */
+    console.warn('remove fails', err)
+  }
 
   const {
     app

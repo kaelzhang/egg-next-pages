@@ -15,13 +15,20 @@ let normal
 let tmpFixture
 
 test.before(async () => {
-  const root = fixture('..', '..', 'egg-ssr-pages-test')
+  const root = path.join(__dirname, '..', '..', 'egg-ssr-pages-test')
   tmpFixture = (...args) => path.join(root, 'normal', ...args)
 
   const dest = tmpFixture()
 
+  await fs.remove(dest)
   await fs.ensureDir(dest)
   await fs.copy(fixture('normal'), dest)
+  try {
+    await fs.remove(tmpFixture('dist'))
+  } catch (err) {
+    /* eslint-disable no-console */
+    console.warn('remove fails', err)
+  }
 
   const {
     app
