@@ -1,7 +1,6 @@
 const {Errors} = require('err-object')
 const {
-  AVAILABLE_RENDERERS,
-  AVAILABLE_GUARDIANS
+  AVAILABLE_RENDERERS
 } = require('./options')
 
 const {error, E} = new Errors()
@@ -13,18 +12,18 @@ E('INVALID_RENDERER', {
   ctor: TypeError
 })
 
-const generateMessage = items => {
+const generateMessage = (items => {
   if (items.length === 1) {
-    return `"${items[0]}" is`
+    return `only "${items[0]}" is`
   }
 
   const quoted = items.map(m => `"${m}"`)
   const last = quoted.pop()
 
-  return `${quoted.join(', ')} and ${last} are`
+  return `only ${quoted.join(', ')} and ${last} are`
 }
 
-const INVALID_BUILTIN_RENDERER = `"%s" is not a valid built-in renderer, only ${
+const INVALID_BUILTIN_RENDERER = `"%s" is not a valid built-in renderer, ${
   generateMessage(AVAILABLE_RENDERERS)
 } supported`
 E('INVALID_BUILTIN_RENDERER', {
@@ -33,15 +32,7 @@ E('INVALID_BUILTIN_RENDERER', {
 })
 
 E('INVALID_GUARD', {
-  message: 'options.guard must be an object or a string',
-  ctor: TypeError
-})
-
-const INVALID_BUILTIN_GUARD = `"%s" is not a valid built-in guardian, only ${
-  generateMessage(AVAILABLE_GUARDIANS)
-} supported`
-E('INVALID_BUILTIN_GUARD', {
-  message: INVALID_BUILTIN_GUARD,
+  message: 'options.guard must be an object',
   ctor: TypeError
 })
 

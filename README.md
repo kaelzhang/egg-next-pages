@@ -31,29 +31,32 @@ $ npm i egg-ssr-pages
 app/router.js
 
 ```js
-const nextPages = require('egg-ssr-pages')
-
-module.exports = nextPages({
-  pages: {
+const ssrPages = require('egg-ssr-pages')
+const pages = {
     // Then if we can access the index.js by
     //   visiting the page http://localhost:8888/en-US
     '/:lang': 'index.js'
-  },
+}
+
+const config = {
   cache: {
     maxAge: 0
   },
-  guard: 'memory',
+  guard: ssrPages.memoryGuardian({
+    max: 100
+  }),
 
   // By default, it renders pages by using next
   // render: 'next'
-})
+}
+
+module.exports = nextPages(pages, config)
 ```
 
-## nextPage(options)
+## nextPage(pages, config: SSRConfig)
 
-- **options** `Object`
-  - **pages** `{[path: string]: PageDef | string}`
-  - `...SSRConfig` the default ssr configurations
+- **pages** `{[path: string]: PageDef | string}` pages
+- **config** `SSRConfig` the default ssr configurations
 
 Returns a roe/egg router function which accepts `app` as the only one parameter.
 
@@ -80,9 +83,8 @@ interface OptionalSSRConfig {
   cache?: CachePolicy | false
   // Set the `guard` to `false` to disable server-side guardians.
   // - GuardPolicy: your custom policy
-  // - string: the name of built-in policies, for now it only supports `'memory'`
   // - `false`(the default value): turn off the guardians
-  guard?: GuardPolicy | string | false
+  guard?: GuardPolicy | false
 }
 
 interface SSRConfig extends OptionalSSRConfig {

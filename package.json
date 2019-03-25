@@ -33,9 +33,15 @@
   "devDependencies": {
     "ava": "^1.2.1",
     "codecov": "^3.2.0",
-    "nyc": "^13.3.0",
+    "eslint": "^5.14.0",
     "eslint-config-ostai": "^1.1.0",
     "eslint-plugin-import": "^2.13.0",
-    "eslint": "^5.14.0"
+    "nyc": "^13.3.0",
+    "react": "^16.8.5",
+    "supertest": "^4.0.2"
+  },
+  "dependencies": {
+    "lru-cache": "^5.1.1",
+    "pre-suf": "^1.1.1"
   }
 }

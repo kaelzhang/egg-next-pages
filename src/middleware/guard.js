@@ -11,6 +11,7 @@ module.exports = ({
   const context = createContext(ctx, contextExtends)
   const key = createKey(context)
   const start = Date.now()
+
   return next()
   .then(
     html =>

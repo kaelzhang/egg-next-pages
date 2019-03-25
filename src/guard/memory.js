@@ -1,14 +1,34 @@
-module.exports = {
-  precheck (app) {
+const LRU = require('lru-cache')
 
-  },
+const key = ctx => {
+  const {req} = ctx
+  return `${req.hostname}${req.path}`
+}
 
-  key (ctx) {
-    const {req} = ctx
-    return `${req.hostname}${req.path}`
-  },
+const onSuccess = (ctx, key, html, cache) => {
+  cache.set(key, html)
+}
 
-  async onSuccess () {
+const validateSSRResult = ctx => {
+  const {res} = ctx
+  return res.statusCode === 200
+}
 
+const fallback = (ctx, key, error, cache) => {
+  const value = cache.get(key)
+  if (value) {
+    return value
+  }
+
+  throw error
+}
+
+module.exports = options => {
+  const cache = new LRU(options)
+  return {
+    key,
+    onSuccess: (...args) => onSuccess(...args, cache),
+    validateSSRResult,
+    fallback: (...args) => fallback(...args, cache)
   }
 }

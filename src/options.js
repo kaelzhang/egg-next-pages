@@ -24,12 +24,6 @@ const getRenderer = render => {
   return RENDERER[render]
 }
 
-const GUARDIANS = {
-  memory: require('./guard/memory')
-}
-
-const AVAILABLE_GUARDIANS = Object.keys(GUARDIANS)
-
 const ensureFunction = (host, key, defaultValue) => {
   if (!(key in host) && defaultValue) {
     host[key] = defaultValue
@@ -56,8 +50,8 @@ const checkGuardian = guard => {
 
 const getGuardian = guard => {
   // Disable guard
-  if (guard === false) {
-    return guard
+  if (!guard) {
+    return
   }
 
   if (Object(guard) === guard) {
@@ -65,15 +59,7 @@ const getGuardian = guard => {
     return guard
   }
 
-  if (typeof guard !== 'string') {
-    throw error('INVALID_GUARD', guard)
-  }
-
-  if (!AVAILABLE_GUARDIANS.includes(guard)) {
-    throw error('INVALID_BUILTIN_GUARD')
-  }
-
-  return GUARDIANS[guard]
+  throw error('INVALID_GUARD', guard)
 }
 
 const createContext = (ctx, contextExtends) => ({
@@ -86,7 +72,5 @@ module.exports = {
   AVAILABLE_RENDERERS,
 
   getGuardian,
-  AVAILABLE_GUARDIANS,
-
   createContext
 }
