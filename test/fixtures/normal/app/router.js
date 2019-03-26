@@ -9,7 +9,9 @@ const normal = () => ssr({
 
 const memory = () => ssr({
   '/home/:lang': 'index',
-  '/not-exists': 'not-exists'
+  '/not-exists': {
+    entry: 'not-exists'
+  }
 }, {
   guard: ssr.memoryGuardian({
     max: 1
@@ -77,13 +79,50 @@ const memory_fallback = () => ssr({
   })
 })
 
+const invalid_renderer_precheck = () => ssr({}, {
+  renderer: {
+    // invalid
+    precheck: true,
+    render () {}
+  }
+})
+
+const invalid_renderer_render = () => ssr({}, {
+  renderer: {
+    // invalid
+    render: true
+  }
+})
+
+const invalid_guard_fallback = () => ssr({}, {
+  guard: {
+    key () {
+      return 'foo'
+    },
+    fallback: true
+  }
+})
+
+const invalid_renderer = () => ssr({}, {
+  renderer: null
+})
+
+const invalid_guard = () => ssr({}, {
+  guard: 'haha'
+})
+
 const TYPES = {
   normal,
   memory,
   invalid_builtin_renderer,
   no_renderer_precheck,
   error_fallback,
-  memory_fallback
+  memory_fallback,
+  invalid_renderer_precheck,
+  invalid_renderer_render,
+  invalid_guard_fallback,
+  invalid_renderer,
+  invalid_guard
 }
 
 const type = process.env.EGG_SSR_PAGES_TYPE || 'normal'

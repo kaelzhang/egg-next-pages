@@ -37,7 +37,7 @@ const getRenderer = renderer => {
 }
 
 const ensureGuardFunction = (host, key, defaultValue) => {
-  if (!(key in host) && defaultValue) {
+  if (!host[key] && defaultValue) {
     host[key] = defaultValue
     return
   }
@@ -71,7 +71,7 @@ const getGuardian = guard => {
     return guard
   }
 
-  throw error('INVALID_GUARD', guard)
+  throw error('INVALID_GUARD')
 }
 
 const createContext = (ctx, contextExtends) => ({

@@ -4,8 +4,8 @@
   "description": "Create roe/egg route definitions to host server-side rendered pages by using next/nuxt",
   "main": "src/index.js",
   "scripts": {
-    "test": "NODE_DEBUG=egg-ssr-pages nyc ava --timeout=10s --verbose test/*.test.js",
-    "// test": "NODE_DEBUG=egg-ssr-pages nyc ava --timeout=10s --verbose test/precheck.test.js",
+    "// test": "NODE_DEBUG=egg-ssr-pages nyc ava --timeout=10s --verbose test/*.test.js",
+    "test": "NODE_DEBUG=egg-ssr-pages nyc ava --timeout=10s --verbose test/invalid-guard-fallback.test.js",
     "test-no-report": "NODE_DEBUG=egg-ssr-pages nyc ava --timeout=10s --verbose test/*.test.js",
     "lint": "eslint .",
     "posttest": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
