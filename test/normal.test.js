@@ -1,4 +1,3 @@
-const log = require('util').debuglog('egg-ssr-pages')
 const test = require('ava')
 const request = require('supertest')
 const fs = require('fs-extra')

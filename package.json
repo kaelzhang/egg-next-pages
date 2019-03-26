@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "test": "NODE_DEBUG=egg-ssr-pages nyc ava --timeout=10s --verbose test/*.test.js",
+    "// test": "NODE_DEBUG=egg-ssr-pages nyc ava --timeout=10s --verbose test/precheck.test.js",
     "test-no-report": "NODE_DEBUG=egg-ssr-pages nyc ava --timeout=10s --verbose test/*.test.js",
     "lint": "eslint .",
     "posttest": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
@@ -43,6 +44,7 @@
     "eslint-plugin-import": "^2.16.0",
     "fs-extra": "^7.0.1",
     "nyc": "^13.3.0",
+    "roe": "^1.1.0",
     "roe-scripts": "^0.0.2",
     "supertest": "^4.0.2"
   },
