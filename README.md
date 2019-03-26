@@ -168,6 +168,12 @@ module.exports = ssrPages({
 })
 ```
 
+### Built-in guardian `ssrPages.memoryGuardian(options)`
+
+- **options** `Object` the options of [`lru-cache`](https://npmjs.org/package/lru-cache)
+
+The built-in guardian to cache successfully rendered result in an LRU cache instance with `${hostname}/${pathname}` as the key, and try to return the cached value if the request fails to render in the future.
+
 ## License
 
 MIT
