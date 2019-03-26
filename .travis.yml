@@ -4,7 +4,7 @@ node_js:
   - "8"
   - "10"
 before_install:
-  - cd test/fixtures/normal
+  - cd test/fixtures/template
   - npm install
   - cd -
 before_script:

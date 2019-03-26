@@ -1,40 +1,22 @@
 const test = require('ava')
-const request = require('supertest')
-const fs = require('fs-extra')
+const setup = require('./fixtures/create')
 
-const {
-  createServer,
-  fixture
-} = require('./fixtures/create')
+let get
 
-process.env.EGG_SSR_PAGES_TYPE = 'normal'
-
-let normal
-
-test.before(async () => {
-  const root = fixture('normal')
-  try {
-    await fs.remove(fixture('normal', 'dist'))
-  } catch (err) {
-    /* eslint-disable no-console */
-    console.warn('remove fails', err)
-  }
-
-  const {
-    app
-  } = await createServer(root)
-
-  normal = app
-})
+setup('normal', ({
+  request
+}) => {
+  get = request
+}, test)
 
 test('normal: default setting', async t => {
   const {
     text,
-    headers
-  } = await request(normal.callback())
-  .get('/home/en')
-  .expect(200)
+    headers,
+    statusCode
+  } = await get('/home/en')
 
+  t.is(statusCode, 200)
   t.true(text.includes(JSON.stringify({lang: 'en'})))
 
   const cacheControl = headers['cache-control']
@@ -44,11 +26,11 @@ test('normal: default setting', async t => {
 test.only('no-cache', async t => {
   const {
     text,
-    headers
-  } = await request(normal.callback())
-  .get('/no-cache')
-  .expect(200)
+    headers,
+    statusCode
+  } = await get('/no-cache')
 
+  t.is(statusCode, 200)
   t.false(text.includes(JSON.stringify({lang: 'en'})))
 
   const cacheControl = headers['cache-control']
@@ -58,8 +40,7 @@ test.only('no-cache', async t => {
 test('normal: 404 page', async t => {
   const {
     statusCode
-  } = await request(normal.callback())
-  .get('/foo/bar')
+  } = await get('/foo/bar')
 
   t.is(statusCode, 404)
 })

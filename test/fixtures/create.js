@@ -2,48 +2,59 @@ const path = require('path')
 const {
   Server
 } = require('roe-scripts')
-// const npminstall = require('npminstall')
-// const co = require('co')
+const fs = require('fs-extra')
+const tmp = require('tmp-promise')
+const supertest = require('supertest')
 
-const fixture = (...args) => path.resolve(__dirname, ...args)
+const TEMPLATE = path.resolve(__dirname, 'template')
 
-const createServer = async name => {
+const createServer = async type => {
+  process.env.EGG_SSR_PAGES_TYPE = type
+
+  const {
+    path: p
+  } = await tmp.dir()
+
+  const cwd = await fs.realpath(p)
+
+  await fs.copy(TEMPLATE, cwd)
+
+  const fixture = (...args) => path.resolve(cwd, ...args)
+
   const server = new Server({
-    cwd: fixture(name),
+    cwd,
     dev: true
   })
 
   await server.ready()
+  const {
+    app
+  } = server
+
+  const st = supertest(app.callback())
+
   return {
     server,
-    app: server.app
+    fixture,
+    request: pathname => st.get(pathname)
   }
 }
 
-// const install = root => new Promise((resolve, reject) => {
-//   const command = spawn('npm', ['install'], {
-//     cwd: root,
-//     stdio: 'inherit'
-//   })
+module.exports = (type, callback, test) => {
+  let close
 
-//   command.on('close', code => {
-//     if (code === 0) {
-//       resolve()
-//       return
-//     }
+  const create = () =>
+    createServer(type)
+    .then(ret => {
+      callback(ret)
+      return close = () => ret.server.close()
+    })
 
-//     reject(new Error('npm install failed'))
-//   })
-// })
+  if (!test) {
+    return create()
+  }
 
-// const install = root => co(function* wrap () {
-//   yield npminstall({
-//     root
-//   })
-// })
+  test.before(create)
 
-module.exports = {
-  createServer,
-  fixture,
-  // install
+  test.after(() => close())
 }
