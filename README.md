@@ -53,7 +53,7 @@ const config = {
 module.exports = nextPages(pages, config)
 ```
 
-- **guard** guardian is used to validate the result of server-side rendered pages, and fetch staled value from cache when the server fails to render the page to improves availability.
+- **guard** guardian is used to validate the each result of server-side rendered pages, and fetch staled value from cache when the server fails to render the page to improves availability.
 
 - **cache** to specify `max-age` of the cache-controll header.
 
