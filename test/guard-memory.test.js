@@ -31,14 +31,40 @@ test.serial('memory: default setting', async t => {
   t.true(text.includes(JSON.stringify({lang: 'en'})))
 })
 
-test.serial('not found, but guard', async t => {
-  await fs.remove(fixture('pages', 'index.js'))
+test.serial('memory: home2', async t => {
+  const {
+    text,
+    statusCode,
+    headers
+  } = await get('/home2/en')
+
+  t.is(headers['x-ssr-guard'], 'no')
+  t.is(statusCode, 200)
+  t.true(text.includes(JSON.stringify({lang: 'en'})))
+})
+
+test.serial('home: not found, but guard', async t => {
+  const index = fixture('pages', 'index.js')
+
+  await fs.remove(index)
 
   const {
     statusCode,
     headers,
     text
   } = await get('/home/en')
+
+  t.is(headers['x-ssr-guard'], 'yes')
+  t.is(statusCode, 200)
+  t.true(text.includes(JSON.stringify({lang: 'en'})))
+})
+
+test.serial('home2: not found, but guard', async t => {
+  const {
+    statusCode,
+    headers,
+    text
+  } = await get('/home2/en')
 
   t.is(headers['x-ssr-guard'], 'yes')
   t.is(statusCode, 200)

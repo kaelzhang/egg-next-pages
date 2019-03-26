@@ -47,11 +47,15 @@ const config = {
   }),
 
   // By default, it renders pages by using next
-  // render: 'next'
+  // renderer: 'next'
 }
 
 module.exports = nextPages(pages, config)
 ```
+
+- **guard** guardian is used to validate the result of server-side rendered pages, and fetch staled value from cache when the server fails to render the page to improves availability.
+
+- **cache** to specify `max-age` of the cache-controll header.
 
 ## ssrPages(pages, config: SSRConfig)
 
@@ -70,6 +74,9 @@ interface PageDef extends OptionalSSRConfig {
 ```
 
 ```ts
+// Preflight checker is used to make sure
+//  if the prerequisites are installed or configured,
+//  such as egg plugins and extentions
 type PreflightChecker = (app): Object | undefined throws Error
 
 interface SSRenderer {

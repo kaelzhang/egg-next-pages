@@ -22,7 +22,7 @@ test('normal: default setting', async t => {
   t.true(/max-age=0/.test(cacheControl))
 })
 
-test.only('no-cache', async t => {
+test('no-cache', async t => {
   const {
     text,
     headers,

@@ -38,6 +38,12 @@ const memory = () => ssr({
   '/home/:lang': 'index',
   '/not-exists': {
     entry: 'not-exists'
+  },
+  '/home2/:lang': {
+    entry: 'index',
+    guard: ssr.memoryGuardian({
+      max: 1
+    })
   }
 }, {
   guard: ssr.memoryGuardian({
@@ -144,6 +150,38 @@ const invalid_cache = () => ssr({
   cache: 'haha'
 })
 
+const multiple_precheck = () => ssr({
+  '/foo': 'hahaha'
+}, {
+  renderer: {
+    precheck () {
+      return {
+        a: 1
+      }
+    },
+
+    render () {
+      return 'bar'
+    }
+  },
+  guard: {
+    precheck () {
+      return {
+        b: 1
+      }
+    },
+    key () {
+      return 'baz'
+    },
+    validateSSRResult (ctx) {
+      return ctx.a === ctx.b
+    },
+    fallback () {
+      throw new Error('booooom!')
+    }
+  }
+})
+
 const TYPES = {
   no_args,
   normal,
@@ -159,7 +197,8 @@ const TYPES = {
   invalid_guard_fallback,
   invalid_renderer,
   invalid_guard,
-  invalid_cache
+  invalid_cache,
+  multiple_precheck
 }
 
 const type = process.env.EGG_SSR_PAGES_TYPE || 'normal'

@@ -40,6 +40,7 @@ const prepare = async (type, copy) => {
 
 const createApp = async (type, create, copy) => {
   const cwd = await prepare(type, copy)
+
   const fixture = (...args) => path.resolve(cwd, ...args)
 
   const app = await create(cwd)

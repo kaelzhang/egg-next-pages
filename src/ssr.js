@@ -17,19 +17,25 @@ const MIDDLEWARE = {
 
 const ensurePath = s => ensureLeading(s, '/')
 
-const applyPrecheck = (ext, precheck, app, createNew) => {
+const applyPrecheckContext = (baseExtends, precheck, app) => {
   if (!precheck) {
-    return
+    return baseExtends
   }
 
-  return createNew
-    ? Object.assign({}, ext, precheck(app))
-    : Object.assign(ext, precheck(app))
+  const precheckExtends = precheck(app)
+
+  return baseExtends
+    ? precheckExtends
+      ? Object.assign({}, baseExtends, precheckExtends)
+      : baseExtends
+    : precheckExtends
 }
 
 const createRendererController = (render, contextExtends, pagePath) =>
   ctx => {
-    const context = createContext(ctx, contextExtends)
+    const context = contextExtends
+      ? createContext(ctx, contextExtends)
+      : ctx
     handle(ctx.res)
     return render(context, pagePath)
   }
@@ -48,11 +54,10 @@ const createGuardPreset = (app, guard, baseExtends) => {
     ...guardian
   } = guard
 
-  const contextExtends = applyPrecheck(
+  const contextExtends = applyPrecheckContext(
     baseExtends,
     precheck,
-    app,
-    true
+    app
   )
 
   const guardMiddleware = MIDDLEWARE.guard(
@@ -79,7 +84,7 @@ const applySSRPages = (app, pages, {
   } = getRenderer(renderer)
   const defaultGuard = getGuardian(guard)
 
-  const baseExtends = applyPrecheck({}, rendererPrecheck, app)
+  const baseExtends = applyPrecheckContext(null, rendererPrecheck, app)
 
   const defaultGuardPreset = createGuardPreset(
     app,

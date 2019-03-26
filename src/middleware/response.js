@@ -26,13 +26,13 @@ module.exports = cache => async (ctx, next) => {
     res
   } = ctx
 
-  ctx.body = html
-
   // If res.statusCode have been set by some middleware,
   // then apply the code to ctx
   if (res[STATUS_EXPLICIT_SET]) {
     ctx.status = res.statusCode
   }
+
+  ctx.body = html
 
   res.setHeader = res[SET_HEADER]
   const headers = res[HEADERS]
