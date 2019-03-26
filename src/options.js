@@ -5,6 +5,7 @@ const {
 } = require('./renderer')
 
 const isObject = object => Object(object) === object
+const isUndefined = s => s === undefined
 
 const checkRendererFunction = (host, key, required) => {
   const fn = host[key]
@@ -79,10 +80,37 @@ const createContext = (ctx, contextExtends) => ({
   __proto__: ctx
 })
 
+const convertCacheOptions = (options, onUndefined) => {
+  if (options === false || isObject(options)) {
+    return options
+  }
+
+  if (isUndefined(options)) {
+    return onUndefined()
+  }
+
+  throw error('INVALID_CACHE')
+}
+
+//                               dO
+//                 | undefined  | false   | object
+// --------------- | ---------- | ------- | --------
+// o   undefined   | {}         | dO      | dO
+//     false       | o          | o       | o
+//     object      | o          | o       | o
+
+const getCacheOptions = (defaultOptions, options) =>
+  convertCacheOptions(
+    options,
+    () => convertCacheOptions(defaultOptions, () => ({}))
+  )
+
 module.exports = {
   getRenderer,
   AVAILABLE_RENDERERS,
 
   getGuardian,
-  createContext
+  createContext,
+
+  getCacheOptions
 }

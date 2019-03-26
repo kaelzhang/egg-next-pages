@@ -1,4 +1,5 @@
 const path = require('path')
+const log = require('util').debuglog('egg-ssr-pages')
 const test = require('ava')
 const request = require('supertest')
 const fs = require('fs-extra')
@@ -19,14 +20,27 @@ test.before(async () => {
 
   const dest = tmpFixture()
 
-  await fs.remove(dest)
+  try {
+    await fs.remove(dest)
+  } catch (err) {
+    /* eslint-disable no-console */
+    console.warn('remove current dest fails', err)
+    /* eslint-enable no-console */
+  }
+  log('remove %s', dest)
+
   await fs.ensureDir(dest)
-  await fs.copy(fixture('normal'), dest)
+  log('ensured dir: %s', dest)
+  const from = fixture('normal')
+  await fs.copy(from, dest)
+  log('copy %s -> %s', from, dest)
+
   try {
     await fs.remove(tmpFixture('dist'))
   } catch (err) {
     /* eslint-disable no-console */
-    console.warn('remove fails', err)
+    console.warn('remove copied dest fails', err)
+    /* eslint-enable no-console */
   }
 
   const {

@@ -3,7 +3,8 @@ const {ensureLeading} = require('pre-suf')
 const {
   getRenderer,
   getGuardian,
-  createContext
+  createContext,
+  getCacheOptions
 } = require('./options')
 const {
   handle
@@ -70,7 +71,7 @@ const createGuardPreset = (app, guard, baseExtends) => {
 const applySSRPages = (app, pages, {
   renderer = 'next',
   guard,
-  cache: defaultCacheOptions = {}
+  cache: defaultCacheOptions
 }) => {
   const {
     precheck: rendererPrecheck,
@@ -104,9 +105,7 @@ const applySSRPages = (app, pages, {
     const middlewares = [
       // Handle http response
       MIDDLEWARE.response(
-        options.cache
-          ? Object.assign({}, defaultCacheOptions, options.cache)
-          : defaultCacheOptions
+        getCacheOptions(defaultCacheOptions, options.cache)
       )
     ]
 

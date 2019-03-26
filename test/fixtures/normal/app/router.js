@@ -1,10 +1,37 @@
 /* eslint-disable import/no-unresolved */
 const ssr = require('egg-ssr-pages')
 
+const no_args = () => ssr()
+
 const normal = () => ssr({
-  '/home/:lang': 'index'
+  '/home/:lang': 'index',
+  '/no-cache': {
+    entry: 'index',
+    cache: false
+  }
 }, {
 
+})
+
+const max_age_60 = () => ssr({
+  '/home/:lang': 'index'
+}, {
+  cache: {
+    maxAge: 60000
+  }
+})
+
+const cache_override = () => ssr({
+  '/home/:lang': {
+    entry: 'index',
+    cache: {
+      maxAge: 40000
+    }
+  }
+}, {
+  cache: {
+    maxAge: 60000
+  }
 })
 
 const memory = () => ssr({
@@ -111,8 +138,17 @@ const invalid_guard = () => ssr({}, {
   guard: 'haha'
 })
 
+const invalid_cache = () => ssr({
+  '/foo/bar': 'not-exists'
+}, {
+  cache: 'haha'
+})
+
 const TYPES = {
+  no_args,
   normal,
+  max_age_60,
+  cache_override,
   memory,
   invalid_builtin_renderer,
   no_renderer_precheck,
@@ -122,7 +158,8 @@ const TYPES = {
   invalid_renderer_render,
   invalid_guard_fallback,
   invalid_renderer,
-  invalid_guard
+  invalid_guard,
+  invalid_cache
 }
 
 const type = process.env.EGG_SSR_PAGES_TYPE || 'normal'

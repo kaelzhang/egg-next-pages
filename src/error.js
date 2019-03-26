@@ -34,10 +34,14 @@ E('INVALID_RENDERER_PROP', {
   ctor: TypeError
 })
 
+const INVALID_CACHE = 'options.cache must be an object, undefined or false'
+E('INVALID_CACHE', INVALID_CACHE, TypeError)
+
 module.exports = {
   error,
   E,
   generateSupportMessage,
   NEXT_NOT_FOUND,
-  INVALID_GUARD
+  INVALID_GUARD,
+  INVALID_CACHE
 }

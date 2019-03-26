@@ -1,6 +1,7 @@
 const {
   HEADERS,
-  SET_HEADER
+  SET_HEADER,
+  STATUS_EXPLICIT_SET
 } = require('../response')
 
 const HEADER_KEY_CACHE_CONTROL = 'cache-control'
@@ -9,7 +10,7 @@ const WITH_CACHE = age => `max-age=${age}, must-revalidate`
 
 const ZERO = 0
 
-module.exports = (cache = {}) => async (ctx, next) => {
+module.exports = cache => async (ctx, next) => {
   const html = await next()
 
   ctx.set(
@@ -25,7 +26,13 @@ module.exports = (cache = {}) => async (ctx, next) => {
     res
   } = ctx
 
-  ctx.status = res.statusCode
+  ctx.body = html
+
+  // If res.statusCode have been set by some middleware,
+  // then apply the code to ctx
+  if (res[STATUS_EXPLICIT_SET]) {
+    ctx.status = res.statusCode
+  }
 
   res.setHeader = res[SET_HEADER]
   const headers = res[HEADERS]
@@ -36,8 +43,4 @@ module.exports = (cache = {}) => async (ctx, next) => {
 
   delete res[SET_HEADER]
   delete res[HEADERS]
-
-  if (html) {
-    ctx.body = html
-  }
 }
