@@ -1,12 +1,11 @@
 const test = require('ava')
-const setup = require('./fixtures/create')
 
 let get
 
-setup('normal', ({
-  request
+require('./fixtures/create')('normal', ({
+  get: g
 }) => {
-  get = request
+  get = g
 }, test)
 
 test('normal: default setting', async t => {

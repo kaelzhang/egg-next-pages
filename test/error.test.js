@@ -1,17 +1,13 @@
 const test = require('ava')
 
-const {
-  createServer
-} = require('./fixtures/create')
+const setup = require('./fixtures/create')
 const {
   generateSupportMessage
 } = require('../src/error')
 
-process.env.EGG_SSR_PAGES_TYPE = 'invalid_builtin_renderer'
-
 test('invalid built-in render', async t => {
   const message = '"blah" is not a valid built-in renderer, only "next" is supported'
-  return t.throwsAsync(() => createServer('normal'), message)
+  return t.throwsAsync(() => setup('invalid_builtin_renderer'), message)
 })
 
 test('generate messages, 3 items', t => {

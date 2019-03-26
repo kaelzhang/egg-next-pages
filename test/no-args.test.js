@@ -1,17 +1,9 @@
 const test = require('ava')
-const request = require('supertest')
-
-const {
-  createServer,
-} = require('./fixtures/create')
-
-process.env.EGG_SSR_PAGES_TYPE = 'no_args'
 
 test('no args', async t => {
-  const {app} = await createServer('normal')
+  const {get} = await require('./fixtures/create')('no_args')
 
-  await request(app.callback())
-  .get('/home/en')
+  await get('/home/en')
   .expect(404)
 
   t.pass()

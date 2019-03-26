@@ -1,28 +1,18 @@
 const test = require('ava')
-const request = require('supertest')
 
-const {
-  createServer
-} = require('./fixtures/create')
+let get
 
-process.env.EGG_SSR_PAGES_TYPE = 'memory_fallback'
-
-let normal
-
-test.before(async () => {
-  const {
-    app
-  } = await createServer('normal')
-
-  normal = app
-})
+require('./fixtures/create')('memory_fallback', ({
+  get: g
+}) => {
+  get = g
+}, test)
 
 test.serial('renderer error, success for the first time', async t => {
   const {
     text,
     statusCode
-  } = await request(normal.callback())
-  .get('/home/en')
+  } = await get('/home/en')
 
   t.is(statusCode, 200)
   t.is(text, 'foo')
@@ -32,8 +22,7 @@ test.serial('renderer error -> memory guard', async t => {
   const {
     text,
     statusCode
-  } = await request(normal.callback())
-  .get('/home/en')
+  } = await get('/home/en')
 
   t.is(statusCode, 200)
   t.is(text, 'foo')
@@ -42,8 +31,7 @@ test.serial('renderer error -> memory guard', async t => {
 test.serial('renderer error -> memory guard not hit', async t => {
   const {
     statusCode
-  } = await request(normal.callback())
-  .get('/home/us')
+  } = await get('/home/us')
 
   t.is(statusCode, 500)
 })

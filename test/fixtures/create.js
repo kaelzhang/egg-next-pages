@@ -8,19 +8,7 @@ const supertest = require('supertest')
 
 const TEMPLATE = path.resolve(__dirname, 'template')
 
-const createServer = async type => {
-  process.env.EGG_SSR_PAGES_TYPE = type
-
-  const {
-    path: p
-  } = await tmp.dir()
-
-  const cwd = await fs.realpath(p)
-
-  await fs.copy(TEMPLATE, cwd)
-
-  const fixture = (...args) => path.resolve(cwd, ...args)
-
+const DEFAULT_CREATE_APP = async cwd => {
   const server = new Server({
     cwd,
     dev: true
@@ -31,23 +19,44 @@ const createServer = async type => {
     app
   } = server
 
+  return app
+}
+
+const prepare = async (type, copy) => {
+  process.env.EGG_SSR_PAGES_TYPE = type
+
+  if (!copy) {
+    return TEMPLATE
+  }
+
+  const {
+    path: p
+  } = await tmp.dir()
+  const cwd = await fs.realpath(p)
+  await fs.copy(TEMPLATE, cwd)
+
+  return cwd
+}
+
+const createApp = async (type, create, copy) => {
+  const cwd = await prepare(type, copy)
+  const fixture = (...args) => path.resolve(cwd, ...args)
+
+  const app = await create(cwd)
   const st = supertest(app.callback())
 
   return {
-    server,
     fixture,
-    request: pathname => st.get(pathname)
+    get: pathname => st.get(pathname)
   }
 }
 
-module.exports = (type, callback, test) => {
-  let close
-
+module.exports = (type, callback, test, copy) => {
   const create = () =>
-    createServer(type)
+    createApp(type, DEFAULT_CREATE_APP, copy)
     .then(ret => {
-      callback(ret)
-      return close = () => ret.server.close()
+      callback && callback(ret)
+      return ret
     })
 
   if (!test) {
@@ -55,6 +64,7 @@ module.exports = (type, callback, test) => {
   }
 
   test.before(create)
-
-  test.after(() => close())
 }
+
+module.exports.prepare = prepare
+module.exports.TEMPLATE = TEMPLATE
