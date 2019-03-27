@@ -1,6 +1,6 @@
 {
   "name": "egg-ssr-pages",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Create roe/egg route definitions to host server-side rendered pages by using next/nuxt",
   "main": "src/index.js",
   "scripts": {

@@ -50,7 +50,7 @@ const config = {
   // renderer: 'next'
 }
 
-module.exports = nextPages(pages, config)
+module.exports = ssrPages(pages, config)
 ```
 
 - **guard** guardian is used to validate the each result of server-side rendered pages, and fetch staled value from cache when the server fails to render the page to improves availability.
