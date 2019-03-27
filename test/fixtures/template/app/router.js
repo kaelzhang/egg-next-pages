@@ -182,6 +182,27 @@ const multiple_precheck = () => ssr({
   }
 })
 
+const success_error = () => ssr({
+  '/foo': 'hahaha'
+}, {
+  renderer: {
+    render () {
+      return 'bar'
+    }
+  },
+  guard: {
+    key () {
+      return 'baz'
+    },
+    onSuccess () {
+      throw new Error('boooom!')
+    },
+    fallback () {
+      return 'baz'
+    }
+  }
+})
+
 const TYPES = {
   no_args,
   normal,
@@ -198,7 +219,8 @@ const TYPES = {
   invalid_renderer,
   invalid_guard,
   invalid_cache,
-  multiple_precheck
+  multiple_precheck,
+  success_error
 }
 
 const type = process.env.EGG_SSR_PAGES_TYPE || 'normal'

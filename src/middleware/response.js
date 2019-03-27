@@ -32,7 +32,10 @@ module.exports = cache => async (ctx, next) => {
     ctx.status = res.statusCode
   }
 
-  ctx.body = html
+  // Server-side rendered pages NEVER return 204
+  if (html) {
+    ctx.body = html
+  }
 
   res.setHeader = res[SET_HEADER]
   const headers = res[HEADERS]
