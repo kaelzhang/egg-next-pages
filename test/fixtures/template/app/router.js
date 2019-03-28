@@ -203,6 +203,24 @@ const success_error = () => ssr({
   }
 })
 
+const render_throw = () => ssr({
+  '/foo': 'hahaha'
+}, {
+  renderer: {
+    render () {
+      throw new Error('booooooooom!')
+    }
+  },
+  guard: {
+    key () {
+      return 'baz'
+    },
+    fallback () {
+      return 'bar'
+    }
+  }
+})
+
 const TYPES = {
   no_args,
   normal,
@@ -220,7 +238,8 @@ const TYPES = {
   invalid_guard,
   invalid_cache,
   multiple_precheck,
-  success_error
+  success_error,
+  render_throw
 }
 
 const type = process.env.EGG_SSR_PAGES_TYPE || 'normal'

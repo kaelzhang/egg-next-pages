@@ -2,6 +2,8 @@ const {
   createContext
 } = require('../options')
 
+const wrapAsync = async fn => fn()
+
 module.exports = ({
   key: createKey,
   validateSSRResult,
@@ -16,7 +18,7 @@ module.exports = ({
   const fallback = err => fallbackTo(context, key, html, err)
 
 
-  return Promise.resolve(next())
+  return Promise.resolve(wrapAsync(next))
   .then(rendered => {
     html = rendered
     // validateSSRResult could be an non-async function
