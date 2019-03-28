@@ -221,6 +221,39 @@ const render_throw = () => ssr({
   }
 })
 
+const set_header = () => ssr({
+  '/foo': 'hahaha'
+}, {
+  renderer: {
+    render (ctx) {
+      const {
+        res
+      } = ctx
+
+      res.statusCode = 404
+      res.setHeader('foo', 'bar')
+
+      return 'bar'
+    }
+  },
+  guard: {
+    key () {
+      return 'baz'
+    },
+    validateSSRResult (ctx) {
+      return ctx.res.statusCode === 200
+    },
+    fallback (ctx) {
+      const {
+        res
+      } = ctx
+      res.setHeader('foo', 'baz')
+      res.statusCode = 303
+      return 'baz'
+    }
+  }
+})
+
 const TYPES = {
   no_args,
   normal,
@@ -239,7 +272,8 @@ const TYPES = {
   invalid_cache,
   multiple_precheck,
   success_error,
-  render_throw
+  render_throw,
+  set_header
 }
 
 const type = process.env.EGG_SSR_PAGES_TYPE || 'normal'

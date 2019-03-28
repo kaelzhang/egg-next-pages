@@ -37,15 +37,15 @@
     ]
   },
   "devDependencies": {
-    "ava": "^1.4.0",
+    "ava": "^1.4.1",
     "codecov": "^3.2.0",
     "eslint": "^5.15.3",
     "eslint-config-ostai": "^3.0.0",
     "eslint-plugin-import": "^2.16.0",
     "fs-extra": "^7.0.1",
     "nyc": "^13.3.0",
-    "roe": "^1.1.0",
-    "roe-scripts": "^1.0.0",
+    "roe": "^1.1.2",
+    "roe-scripts": "^1.0.1",
     "supertest": "^4.0.2",
     "tmp-promise": "^1.0.5"
   },

@@ -46,4 +46,5 @@ module.exports = cache => async (ctx, next) => {
 
   delete res[SET_HEADER]
   delete res[HEADERS]
+  delete res[STATUS_EXPLICIT_SET]
 }
