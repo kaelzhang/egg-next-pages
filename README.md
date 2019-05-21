@@ -106,13 +106,13 @@ module.exports = ssrPages({
 ### Different entries for desktop and mobile devices
 
 ```js
-const diverse = (desktopEntry, mobileEntry) => ctx =>
+const diverge = (desktopEntry, mobileEntry) => ctx =>
   isMobileUserAgent(ctx.headers['user-agent'])
     ? mobileEntry
     : desktopEntry
 
 module.exports = ssrPages({
-  '/': diverse('index', 'mobile-index')
+  '/': diverge('index', 'mobile-index')
 })
 ```
 
