@@ -91,7 +91,10 @@ interface OptionalSSRConfig {
   // Set the `guard` to `false` to disable server-side guardians.
   // - GuardPolicy: your custom policy
   // - `false`(the default value): turn off the guardians
-  guard?: GuardPolicy | false
+  guard?: GuardPolicy | false,
+
+  // new in 1.1.0
+  middleware?: Function | Array<Function>
 }
 
 interface SSRConfig extends OptionalSSRConfig {

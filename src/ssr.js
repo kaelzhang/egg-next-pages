@@ -4,7 +4,8 @@ const {
   getRenderer,
   getGuardian,
   createContext,
-  getCacheOptions
+  getCacheOptions,
+  getExtraMiddlewares
 } = require('./options')
 const {
   handle
@@ -76,7 +77,8 @@ const createGuardPreset = (app, guard, baseExtends) => {
 const applySSRPages = (app, pages, {
   renderer = 'next',
   guard,
-  cache: defaultCacheOptions
+  cache: defaultCacheOptions,
+  middleware: defaultMiddlewares
 }) => {
   const {
     precheck: rendererPrecheck,
@@ -97,17 +99,20 @@ const applySSRPages = (app, pages, {
 
     let entry
     let options = {}
+    let middleware
 
     if (typeof def === 'string') {
       entry = def
     } else {
       ({
         entry,
+        middleware,
         ...options
       } = def)
     }
 
     const middlewares = [
+      ...getExtraMiddlewares(middleware || defaultMiddlewares),
       // Handle http response
       MIDDLEWARE.response(
         getCacheOptions(defaultCacheOptions, options.cache)

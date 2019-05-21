@@ -5,10 +5,11 @@ const {error, E} = new Errors()
 const NEXT_NOT_FOUND = 'app.next not found, next instance should be added to egg app before router is about to load'
 E('NEXT_NOT_FOUND', NEXT_NOT_FOUND)
 
-E('INVALID_RENDERER', {
-  message: 'options.renderer must be an object or a string, but got %s',
-  ctor: TypeError
-})
+const BUT_GOT = ', but got `%s`'
+const EE = (code, message) => E(code, message + BUT_GOT, TypeError)
+
+EE('INVALID_RENDERER',
+  'options.renderer must be an object or a string')
 
 const generateSupportMessage = items => {
   if (items.length === 1) {
@@ -22,26 +23,25 @@ const generateSupportMessage = items => {
 }
 
 const INVALID_GUARD = 'options.guard must be an object or false'
-E('INVALID_GUARD', INVALID_GUARD, TypeError)
+EE('INVALID_GUARD', INVALID_GUARD)
 
-E('INVALID_GUARDIAN_PROP', {
-  message: 'guardian.%s must be a function, but got %s',
-  ctor: TypeError
-})
+EE('INVALID_GUARDIAN_PROP', 'guardian.%s must be a function')
 
-E('INVALID_RENDERER_PROP', {
-  message: 'renderer.%s must be a function, but got %s',
-  ctor: TypeError
-})
+EE('INVALID_RENDERER_PROP', 'renderer.%s must be a function')
 
 const INVALID_CACHE = 'options.cache must be an object, undefined or false'
-E('INVALID_CACHE', INVALID_CACHE, TypeError)
+EE('INVALID_CACHE', INVALID_CACHE)
+
+const INVALID_MIDDLEWARE = 'options.middleware must be a function, an array of functions, undefined or false'
+EE('INVALID_MIDDLEWARE', INVALID_MIDDLEWARE)
 
 module.exports = {
   error,
   E,
   generateSupportMessage,
   NEXT_NOT_FOUND,
+  INVALID_MIDDLEWARE,
   INVALID_GUARD,
-  INVALID_CACHE
+  INVALID_CACHE,
+  BUT_GOT
 }

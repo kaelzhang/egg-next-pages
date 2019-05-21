@@ -1,3 +1,4 @@
+const {isArray, isFunction} = require('core-util-is')
 const {error} = require('./error')
 const {
   AVAILABLE_RENDERERS,
@@ -72,7 +73,7 @@ const getGuardian = guard => {
     return guard
   }
 
-  throw error('INVALID_GUARD')
+  throw error('INVALID_GUARD', guard)
 }
 
 const createContext = (ctx, contextExtends) => ({
@@ -89,7 +90,7 @@ const convertCacheOptions = (options, onUndefined) => {
     return onUndefined()
   }
 
-  throw error('INVALID_CACHE')
+  throw error('INVALID_CACHE', options)
 }
 
 //                               dO
@@ -105,6 +106,22 @@ const getCacheOptions = (defaultOptions, options) =>
     () => convertCacheOptions(defaultOptions, () => ({}))
   )
 
+const getExtraMiddlewares = middleware => {
+  if (!middleware) {
+    return []
+  }
+
+  if (isFunction(middleware)) {
+    return [middleware]
+  }
+
+  if (!isArray(middleware) || !middleware.every(isFunction)) {
+    throw error('INVALID_MIDDLEWARE', middleware)
+  }
+
+  return middleware
+}
+
 module.exports = {
   getRenderer,
   AVAILABLE_RENDERERS,
@@ -112,5 +129,6 @@ module.exports = {
   getGuardian,
   createContext,
 
-  getCacheOptions
+  getCacheOptions,
+  getExtraMiddlewares
 }

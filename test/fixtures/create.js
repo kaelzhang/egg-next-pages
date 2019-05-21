@@ -1,23 +1,32 @@
 const path = require('path')
-const {
-  Server
-} = require('roe-scripts')
 const fs = require('fs-extra')
 const tmp = require('tmp-promise')
 const supertest = require('supertest')
+const {Roe} = require('roe')
+const createNext = require('next')
 
 const TEMPLATE = path.resolve(__dirname, 'template')
 
 const DEFAULT_CREATE_APP = async cwd => {
-  const server = new Server({
-    cwd,
-    dev: true
+  const next = createNext({
+    dev: true,
+    dir: cwd,
+    conf: {
+      distDir: 'dist',
+      assetPrefix: ''
+    }
   })
 
-  await server.ready()
-  const {
-    app
-  } = server
+  await next.prepare()
+
+  const app = new Roe({
+    extends: {
+      next
+    },
+    baseDir: cwd
+  })
+
+  await app.ready()
 
   return app
 }
