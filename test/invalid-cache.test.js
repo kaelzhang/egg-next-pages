@@ -8,7 +8,7 @@ const {
 
 test('invalid cache', t =>
   t.throwsAsync(
-    () => require('./fixtures/create')('invalid_cache'),
+    () => require('./fixtures/create').createFakeApp('invalid_cache'),
     format(INVALID_CACHE + BUT_GOT, 'haha')
   )
 )

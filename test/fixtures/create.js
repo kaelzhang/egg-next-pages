@@ -7,18 +7,7 @@ const createNext = require('next')
 
 const TEMPLATE = path.resolve(__dirname, 'template')
 
-const DEFAULT_CREATE_APP = async cwd => {
-  const next = createNext({
-    dev: true,
-    dir: cwd,
-    conf: {
-      distDir: 'dist',
-      assetPrefix: ''
-    }
-  })
-
-  await next.prepare()
-
+const prepareApp = async (cwd, next = {}) => {
   const app = new Roe({
     extends: {
       next
@@ -31,6 +20,21 @@ const DEFAULT_CREATE_APP = async cwd => {
   return app
 }
 
+const DEFAULT_CREATE_APP = async cwd => {
+  const next = createNext({
+    dev: true,
+    dir: cwd,
+    conf: {
+      distDir: 'dist',
+      assetPrefix: ''
+    }
+  })
+
+  await next.prepare()
+
+  return prepareApp(cwd, next)
+}
+
 const prepare = async (type, copy) => {
   process.env.EGG_SSR_PAGES_TYPE = type
 
@@ -41,13 +45,15 @@ const prepare = async (type, copy) => {
   const {
     path: p
   } = await tmp.dir()
+
   const cwd = await fs.realpath(p)
+
   await fs.copy(TEMPLATE, cwd)
 
   return cwd
 }
 
-const createApp = async (type, create, copy) => {
+const createAgent = async (type, create, copy) => {
   const cwd = await prepare(type, copy)
 
   const fixture = (...args) => path.resolve(cwd, ...args)
@@ -61,9 +67,14 @@ const createApp = async (type, create, copy) => {
   }
 }
 
+const createFakeApp = async type => {
+  const cwd = await prepare(type)
+  return prepareApp(cwd)
+}
+
 module.exports = (type, callback, test, copy) => {
   const create = () =>
-    createApp(type, DEFAULT_CREATE_APP, copy)
+    createAgent(type, DEFAULT_CREATE_APP, copy)
     .then(ret => {
       callback && callback(ret)
       return ret
@@ -77,4 +88,5 @@ module.exports = (type, callback, test, copy) => {
 }
 
 module.exports.prepare = prepare
+module.exports.createFakeApp = createFakeApp
 module.exports.TEMPLATE = TEMPLATE

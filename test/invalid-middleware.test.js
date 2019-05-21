@@ -8,7 +8,7 @@ const {
 
 test('invalid middleware', t =>
   t.throwsAsync(
-    () => require('./fixtures/create')('invalid_middleware'),
+    () => require('./fixtures/create').createFakeApp('invalid_middleware'),
     format(INVALID_MIDDLEWARE + BUT_GOT, 'haha')
   )
 )

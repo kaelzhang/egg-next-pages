@@ -1,13 +1,13 @@
 const test = require('ava')
 
-const setup = require('./fixtures/create')
+const {createFakeApp} = require('./fixtures/create')
 const {
   generateSupportMessage
 } = require('../src/error')
 
 test('invalid built-in render', async t => {
   const message = '"blah" is not a valid built-in renderer, only "next" is supported'
-  return t.throwsAsync(() => setup('invalid_builtin_renderer'), message)
+  return t.throwsAsync(() => createFakeApp('invalid_builtin_renderer'), message)
 })
 
 test('generate messages, 3 items', t => {

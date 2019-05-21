@@ -8,7 +8,7 @@ const {
 
 test('invalid guard', t =>
   t.throwsAsync(
-    () => require('./fixtures/create')('invalid_guard'),
+    () => require('./fixtures/create').createFakeApp('invalid_guard'),
     format(INVALID_GUARD + BUT_GOT, 'haha')
   )
 )

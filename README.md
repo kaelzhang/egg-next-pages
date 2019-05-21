@@ -94,7 +94,7 @@ interface OptionalSSRConfig {
   guard?: GuardPolicy | false,
 
   // New in 1.1.0
-  // Set one or more middleware for all entries or a certain entry.
+  // Set one or more middlewares for all entries or for a certain entry.
   middleware?: Function | Array<Function>
 }
 
@@ -168,6 +168,17 @@ module.exports = ssrPages({
 }, {
   cache: {
     maxAge: 0
+  }
+})
+```
+
+### Custom middleware for a certain entry
+
+```js
+module.exports = ssrPages({
+  '/:lang': {
+    entry: 'index',
+    middleware: [myCustomMiddleware]
   }
 })
 ```
