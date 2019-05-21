@@ -93,7 +93,8 @@ interface OptionalSSRConfig {
   // - `false`(the default value): turn off the guardians
   guard?: GuardPolicy | false,
 
-  // new in 1.1.0
+  // New in 1.1.0
+  // Set one or more middleware for all entries or a certain entry.
   middleware?: Function | Array<Function>
 }
 

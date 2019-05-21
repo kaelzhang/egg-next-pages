@@ -254,6 +254,56 @@ const set_header = () => ssr({
   }
 })
 
+const default_middleware = () => ssr({
+  '/foo': 'index'
+}, {
+  middleware (ctx, next) {
+    ctx.state.foo = 'foo'
+    return next()
+  },
+  renderer: {
+    render (ctx) {
+      return ctx.state.foo
+    }
+  }
+})
+
+const middleware = () => ssr({
+  '/foo': {
+    entry: 'index',
+    middleware: [
+      (ctx, next) => {
+        ctx.state.foo = 'foo'
+        return next()
+      },
+
+      (ctx, next) => {
+        ctx.state.foo += '-bar'
+        return next()
+      }
+    ],
+  }
+}, {
+  renderer: {
+    render (ctx) {
+      return ctx.state.foo
+    }
+  }
+})
+
+const invalid_middleware = () => ssr({
+  '/foo': {
+    entry: 'index',
+    middleware: 'haha'
+  }
+}, {
+  renderer: {
+    render (ctx) {
+      return ctx.state.foo
+    }
+  }
+})
+
 const TYPES = {
   no_args,
   normal,
@@ -273,7 +323,10 @@ const TYPES = {
   multiple_precheck,
   success_error,
   render_throw,
-  set_header
+  set_header,
+  default_middleware,
+  middleware,
+  invalid_middleware
 }
 
 const type = process.env.EGG_SSR_PAGES_TYPE || 'normal'
