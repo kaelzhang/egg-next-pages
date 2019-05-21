@@ -20,12 +20,12 @@ const prepareApp = async (cwd, next = {}) => {
   return app
 }
 
-const DEFAULT_CREATE_APP = async cwd => {
+const DEFAULT_CREATE_APP = async (cwd, type) => {
   const next = createNext({
     dev: true,
     dir: cwd,
     conf: {
-      distDir: 'dist',
+      distDir: `.next-${type}`,
       assetPrefix: ''
     }
   })
@@ -58,7 +58,7 @@ const createAgent = async (type, create, copy) => {
 
   const fixture = (...args) => path.resolve(cwd, ...args)
 
-  const app = await create(cwd)
+  const app = await create(cwd, type)
   const st = supertest(app.callback())
 
   return {
