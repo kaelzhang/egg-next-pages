@@ -10,4 +10,6 @@ test('middleware', async t => {
 
   t.is(statusCode, 200)
   t.is(text, 'foo-bar')
+
+  t.is((await get('/bar')).text, 'foo-bar')
 })

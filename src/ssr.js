@@ -5,7 +5,8 @@ const {
   getGuardian,
   createContext,
   getCacheOptions,
-  getExtraMiddlewares
+  getExtraMiddlewares,
+  getPageDef
 } = require('./options')
 const {
   handle
@@ -76,7 +77,7 @@ const createGuardPreset = (app, guard, baseExtends) => {
 // https://github.com/kaelzhang/egg-define-router#definerouterroutes-middlewareroot-factory
 const applySSRPages = (app, pages, {
   renderer = 'next',
-  guard,
+  guard: defaultGuardian,
   cache: defaultCacheOptions,
   middleware: defaultMiddlewares
 }) => {
@@ -84,7 +85,7 @@ const applySSRPages = (app, pages, {
     precheck: rendererPrecheck,
     render
   } = getRenderer(renderer)
-  const defaultGuard = getGuardian(guard)
+  const defaultGuard = getGuardian(defaultGuardian)
 
   const baseExtends = applyPrecheckContext(null, rendererPrecheck, app)
 
@@ -95,38 +96,29 @@ const applySSRPages = (app, pages, {
   )
 
   Object.keys(pages).forEach(page => {
-    const def = pages[page]
-
-    let entry
-    let options = {}
-    let middleware
-
-    if (typeof def === 'string') {
-      entry = def
-    } else {
-      ({
-        entry,
-        middleware,
-        ...options
-      } = def)
-    }
+    const {
+      entry,
+      cache,
+      middleware,
+      guard
+    } = getPageDef(pages[page])
 
     const middlewares = [
       ...getExtraMiddlewares(middleware || defaultMiddlewares),
       // Handle http response
       MIDDLEWARE.response(
-        getCacheOptions(defaultCacheOptions, options.cache)
+        getCacheOptions(defaultCacheOptions, cache)
       )
     ]
 
     const {
       guardMiddleware,
       contextExtends
-    } = options.guard
+    } = guard
       // If custom guard found, the default guard should be overridden
       ? createGuardPreset(
         app,
-        options.guard,
+        guard,
         baseExtends
       )
       : defaultGuardPreset

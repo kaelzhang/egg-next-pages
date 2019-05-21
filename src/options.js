@@ -1,4 +1,4 @@
-const {isArray, isFunction} = require('core-util-is')
+const {isArray, isFunction, isString} = require('core-util-is')
 const {error} = require('./error')
 const {
   AVAILABLE_RENDERERS,
@@ -122,6 +122,32 @@ const getExtraMiddlewares = middleware => {
   return middleware
 }
 
+const getPageDef = def => {
+  let definition
+
+  if (isString(def)) {
+    definition = {
+      entry: def
+    }
+  } else if (isArray(def)) {
+    const entry = def.pop()
+    definition = {
+      entry,
+      middleware: def
+    }
+  } else if (isObject(def)) {
+    definition = def
+  } else {
+    throw error('INVALID_PAGE_DEF', def)
+  }
+
+  if (!isString(definition.entry)) {
+    throw error('INVALID_ENTRY', definition.entry)
+  }
+
+  return definition
+}
+
 module.exports = {
   getRenderer,
   AVAILABLE_RENDERERS,
@@ -130,5 +156,6 @@ module.exports = {
   createContext,
 
   getCacheOptions,
-  getExtraMiddlewares
+  getExtraMiddlewares,
+  getPageDef
 }

@@ -59,31 +59,29 @@ module.exports = ssrPages(pages, config)
 
 ## ssrPages(pages, config: SSRConfig)
 
-- **pages** `{[path: string]: PageDef | string}` pages
+- **pages** `{[path: string]: PageDef}` pages
 - **config** `SSRConfig` the default ssr configurations
 
 Returns a roe/egg router function which accepts `app` as the only one parameter.
 
-### `SSRConfig` and `PageDef`
+```ts
+type PageDef =
+  // Just an entry
+  string
+  // An entry and koa middleware functions for the entry
+  | [...Array<Function>, string]
+  | ObjectPageDef
+```
+
 
 ```ts
 // So that we can override the default ssr configurations
-interface PageDef extends OptionalSSRConfig {
+interface ObjectPageDef extends OptionalSSRConfig {
   entry: string
 }
 ```
 
 ```ts
-// Preflight checker is used to make sure
-//  if the prerequisites are installed or configured,
-//  such as egg plugins and extentions
-type PreflightChecker = (app): Object | undefined throws Error
-
-interface SSRenderer {
-  precheck: PreflightChecker
-  async render (ctx, pagePath): string throws Error
-}
-
 interface OptionalSSRConfig {
   // Disable CDN cache by setting to `false`,
   // Defaults to `false`
@@ -96,6 +94,16 @@ interface OptionalSSRConfig {
   // New in 1.1.0
   // Set one or more middlewares for all entries or for a certain entry.
   middleware?: Function | Array<Function>
+}
+
+// Preflight checker is used to make sure
+//  if the prerequisites are installed or configured,
+//  such as egg plugins and extentions
+type PreflightChecker = (app): Object | undefined throws Error
+
+interface SSRenderer {
+  precheck: PreflightChecker
+  async render (ctx, pagePath): string throws Error
 }
 
 interface SSRConfig extends OptionalSSRConfig {
@@ -180,6 +188,18 @@ module.exports = ssrPages({
     entry: 'index',
     middleware: [myCustomMiddleware]
   }
+})
+```
+
+Or
+
+```js
+module.exports = ssrPages({
+  '/:lang': [
+    myCustomMiddleware,  // <- koa middleware
+    // <- We can define more koa middlewares here
+    'index'   // <- entry
+  ]
 })
 ```
 
