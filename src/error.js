@@ -25,9 +25,8 @@ const generateSupportMessage = items => {
 const INVALID_GUARD = 'options.guard must be an object or false'
 EE('INVALID_GUARD', INVALID_GUARD)
 
-EE('INVALID_PAGE_DEF', 'page definition must be string, array or object')
-
-EE('INVALID_ENTRY', 'entry must be a string')
+EE('INVALID_ENTRY', 'entry must be either string or function')
+EE('INVALID_ENTRY_RETURN_VALUE', 'entry getter must return a string')
 
 EE('INVALID_GUARDIAN_PROP', 'guardian.%s must be a function')
 

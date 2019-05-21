@@ -123,26 +123,23 @@ const getExtraMiddlewares = middleware => {
 }
 
 const getPageDef = def => {
-  let definition
-
-  if (isString(def)) {
-    definition = {
-      entry: def
-    }
-  } else if (isArray(def)) {
-    const entry = def.pop()
-    definition = {
-      entry,
+  const definition = isArray(def)
+    // [...middlewares, entry]
+    ? {
+      entry: def.pop(),
       middleware: def
     }
-  } else if (isObject(def)) {
-    definition = def
-  } else {
-    throw error('INVALID_PAGE_DEF', def)
-  }
+    : isFunction(def) || !isObject(def)
+      // Getter or string entry
+      ? {
+        entry: def
+      }
+      : def
 
-  if (!isString(definition.entry)) {
-    throw error('INVALID_ENTRY', definition.entry)
+  const {entry} = definition
+
+  if (!isString(entry) && !isFunction(entry)) {
+    throw error('INVALID_ENTRY', entry)
   }
 
   return definition

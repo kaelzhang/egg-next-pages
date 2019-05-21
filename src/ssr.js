@@ -1,4 +1,5 @@
 const {ensureLeading} = require('pre-suf')
+const {isString, isFunction} = require('core-util-is')
 
 const {
   getRenderer,
@@ -11,6 +12,7 @@ const {
 const {
   handle
 } = require('./response')
+const {error} = require('./error')
 
 const MIDDLEWARE = {
   guard: require('./middleware/guard'),
@@ -33,13 +35,27 @@ const applyPrecheckContext = (baseExtends, precheck, app) => {
     : precheckExtends
 }
 
-const createRendererController = (render, contextExtends, pagePath) =>
-  ctx => {
+const getPagePath = (entry, ctx) => {
+  const pagePath = entry(ctx)
+
+  if (!isString(pagePath)) {
+    throw error('INVALID_ENTRY_RETURN_VALUE', pagePath)
+  }
+
+  return pagePath
+}
+
+const createRendererController = (render, contextExtends, entry) =>
+  async ctx => {
+    const pagePath = isFunction(entry)
+      ? getPagePath(entry, ctx)
+      : entry
+
     const context = contextExtends
       ? createContext(ctx, contextExtends)
       : ctx
     handle(ctx.res)
-    return render(context, pagePath)
+    return render(context, ensurePath(pagePath))
   }
 
 // Create guard middleware and context
@@ -127,12 +143,10 @@ const applySSRPages = (app, pages, {
       middlewares.push(guardMiddleware)
     }
 
-    const pathname = ensurePath(entry)
-
     app.router.get(
       page,
       ...middlewares,
-      createRendererController(render, contextExtends, pathname)
+      createRendererController(render, contextExtends, entry)
     )
   })
 }

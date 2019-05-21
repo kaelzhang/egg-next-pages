@@ -283,10 +283,11 @@ const middleware = () => {
 
   return ssr({
     '/foo': {
-      entry: 'index',
+      entry: () => 'index',
       middleware: m
     },
-    '/bar': [...m, 'index']
+    '/bar': [...m, 'index'],
+    '/invalid': () => 1
   }, {
     renderer: {
       render (ctx) {
@@ -307,10 +308,6 @@ const invalid_middleware = () => ssr({
       return ctx.state.foo
     }
   }
-})
-
-const invalid_page_def = () => ssr({
-  '/foo': 1
 })
 
 const invalid_entry = () => ssr({
@@ -340,7 +337,6 @@ const TYPES = {
   default_middleware,
   middleware,
   invalid_middleware,
-  invalid_page_def,
   invalid_entry
 }
 

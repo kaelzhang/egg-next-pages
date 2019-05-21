@@ -57,6 +57,65 @@ module.exports = ssrPages(pages, config)
 
 - **cache** to specify `max-age` of the cache-controll header.
 
+### Override default `SSRConfig` for a certain pagePath
+
+```js
+module.exports = ssrPages({
+  '/:lang': 'index',
+
+  // We can override a certain property of `SSRConfig` by
+  //   defining a new value in each `PageDef`
+  '/about': {
+    entry: 'about',
+    cache: {
+      // http://localhost:8888/about
+      // -> max-age: 1h
+      maxAge: 60 * 60 * 1000
+    }
+  }
+}, {
+  cache: {
+    maxAge: 0
+  }
+})
+```
+
+### Custom middleware for a certain entry
+
+```js
+module.exports = ssrPages({
+  '/:lang': {
+    entry: 'index',
+    middleware: [myCustomMiddleware]
+  }
+})
+```
+
+Or
+
+```js
+module.exports = ssrPages({
+  '/:lang': [
+    myCustomMiddleware,  // <- koa middleware
+    // <- We can define more koa middlewares here
+    'index'   // <- entry
+  ]
+})
+```
+
+### Different entries for desktop and mobile devices
+
+```js
+const diverse = (desktopEntry, mobileEntry) => ctx =>
+  isMobileUserAgent(ctx.headers['user-agent'])
+    ? mobileEntry
+    : desktopEntry
+
+module.exports = ssrPages({
+  '/': diverse('index', 'mobile-index')
+})
+```
+
 ## ssrPages(pages, config: SSRConfig)
 
 - **pages** `{[path: string]: PageDef}` pages
@@ -65,9 +124,12 @@ module.exports = ssrPages(pages, config)
 Returns a roe/egg router function which accepts `app` as the only one parameter.
 
 ```ts
+type EntryGetter = function (ctx): string
+
 type PageDef =
   // Just an entry
   string
+  | EntryGetter
   // An entry and koa middleware functions for the entry
   | [...Array<Function>, string]
   | ObjectPageDef
@@ -77,7 +139,7 @@ type PageDef =
 ```ts
 // So that we can override the default ssr configurations
 interface ObjectPageDef extends OptionalSSRConfig {
-  entry: string
+  entry: string | EntryGetter
 }
 ```
 
@@ -156,52 +218,6 @@ interface GuardPolicy {
 - **html** `string | undefined` the html content which rendered by `SSRConfig::render`
 - **time** `number` the milliseconds how much the renderer takes to render the page
 - **error** `Error | null`
-
-### Override default `SSRConfig` for a certain pagePath
-
-```js
-module.exports = ssrPages({
-  '/:lang': 'index',
-
-  // We can override a certain property of `SSRConfig` by
-  //   defining a new value in each `PageDef`
-  '/about': {
-    entry: 'about',
-    cache: {
-      // http://localhost:8888/about
-      // -> max-age: 1h
-      maxAge: 60 * 60 * 1000
-    }
-  }
-}, {
-  cache: {
-    maxAge: 0
-  }
-})
-```
-
-### Custom middleware for a certain entry
-
-```js
-module.exports = ssrPages({
-  '/:lang': {
-    entry: 'index',
-    middleware: [myCustomMiddleware]
-  }
-})
-```
-
-Or
-
-```js
-module.exports = ssrPages({
-  '/:lang': [
-    myCustomMiddleware,  // <- koa middleware
-    // <- We can define more koa middlewares here
-    'index'   // <- entry
-  ]
-})
-```
 
 ### Built-in guardian `ssrPages.memoryGuardian(options)`
 

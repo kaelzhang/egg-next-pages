@@ -12,4 +12,6 @@ test('middleware', async t => {
   t.is(text, 'foo-bar')
 
   t.is((await get('/bar')).text, 'foo-bar')
+
+  t.is((await get('/invalid')).statusCode, 500)
 })
