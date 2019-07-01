@@ -1,6 +1,6 @@
 {
   "name": "egg-ssr-pages",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "description": "Create roe/egg route definitions to host server-side rendered pages by using next/nuxt",
   "main": "src/index.js",
   "scripts": {
@@ -39,23 +39,23 @@
     ]
   },
   "devDependencies": {
-    "ava": "^1.4.1",
+    "ava": "^2.1.0",
     "codecov": "^3.5.0",
-    "eslint": "^5.16.0",
+    "eslint": "^6.0.1",
     "eslint-config-ostai": "^3.0.0",
-    "eslint-plugin-import": "^2.17.2",
-    "fs-extra": "^8.0.1",
+    "eslint-plugin-import": "^2.18.0",
+    "fs-extra": "^8.1.0",
     "next": "^8.1.0",
     "nyc": "^14.1.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "roe": "^2.0.0",
+    "roe": "^2.1.1",
     "supertest": "^4.0.2",
-    "tmp-promise": "^1.1.0"
+    "tmp-promise": "^2.0.1"
   },
   "dependencies": {
     "core-util-is": "^1.0.2",
-    "err-object": "^4.3.1",
+    "err-object": "^5.1.2",
     "lru-cache": "^5.1.1",
     "pre-suf": "^1.1.1"
   }
