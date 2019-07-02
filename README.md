@@ -173,7 +173,7 @@ interface SSRConfig extends OptionalSSRConfig {
   // - SSRenderer: your custom renderer
   // - string: the name of built-in renderers: 'next'
   // Defaults to `'next'`
-  renderer: SSRenderer | string
+  renderer: SSRenderer | string = 'next'
 }
 ```
 

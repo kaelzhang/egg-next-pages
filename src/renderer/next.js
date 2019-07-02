@@ -1,3 +1,4 @@
+const {parse} = require('url')
 const {error} = require('../error')
 
 module.exports = {
@@ -21,6 +22,13 @@ module.exports = {
       next
     } = ctx
 
-    return next.renderToHTML(req, res, pagePath, params)
+    const {
+      query
+    } = parse(ctx.url, true)
+
+    return next.renderToHTML(req, res, pagePath, {
+      ...query,
+      ...params
+    })
   }
 }

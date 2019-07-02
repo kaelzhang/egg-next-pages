@@ -51,6 +51,10 @@ const memory = () => ssr({
   })
 })
 
+const query = () => ssr({
+  '/home': 'index'
+})
+
 const invalid_builtin_renderer = () => ssr({}, {
   renderer: 'blah'
 })
@@ -337,7 +341,8 @@ const TYPES = {
   default_middleware,
   middleware,
   invalid_middleware,
-  invalid_entry
+  invalid_entry,
+  query
 }
 
 const type = process.env.EGG_SSR_PAGES_TYPE || 'normal'

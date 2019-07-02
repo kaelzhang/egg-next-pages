@@ -14,7 +14,7 @@ export default class IndexPage extends Component {
     } = this.props
 
     return (
-      <div>{JSON.stringify(query)}</div>
+      <div id="lang">{query.lang}</div>
     )
   }
 }
